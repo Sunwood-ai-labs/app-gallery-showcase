@@ -1,0 +1,8 @@
+/* Custom styles can be added here */
+.app-card {
+    transition: transform 0.2s;
+}
+
+.app-card:hover {
+    transform: translateY(-4px);
+}
