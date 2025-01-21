@@ -1,37 +1,77 @@
-# App Gallery Showcase
+<div align="center">
 
-A beautiful web application to showcase your projects, similar to Hugging Face Spaces. Built with Flask and TailwindCSS.
+![App Gallery Showcase Header](https://github.com/user-attachments/assets/24a2edc1-dc5e-4dda-8d1a-638ab29aede7)
 
-## Features
+# 📊 App Gallery Showcase
 
-- Modern card-based layout
-- Responsive design
-- Like counter for each app
-- Tags support
-- Author attribution
+**プロジェクトを美しく魅力的に紹介するウェブアプリケーション**
 
-## Setup
+[![GitHub stars](https://img.shields.io/github/stars/Sunwood-ai-labs/hf-space-card-showcase?style=social)](https://github.com/Sunwood-ai-labs/hf-space-card-showcase)
+[![GitHub license](https://img.shields.io/github/license/Sunwood-ai-labs/hf-space-card-showcase)](https://github.com/Sunwood-ai-labs/hf-space-card-showcase/blob/main/LICENSE)
 
-1. Install dependencies:
+
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+
+</div>
+
+## ✨ 特徴
+
+- モダンなカードベースのレイアウト
+- レスポンシブデザイン
+- Next.jsルーティング
+- TypeScriptの型安全性
+- Tailwind CSSスタイリング
+
+## 🛠️ 前提条件
+
+- Node.js (v16以降)
+- npm または yarn
+
+## 📦 セットアップ
+
+1. リポジトリをクローン:
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/Sunwood-ai-labs/hf-space-card-showcase.git
+cd hf-space-card-showcase
 ```
 
-2. Run the application:
+2. 依存関係をインストール:
 ```bash
-python app.py
+npm install
+# または
+yarn install
 ```
 
-3. Open your browser and visit `http://localhost:5000`
+3. 開発サーバーを起動:
+```bash
+npm run dev
+# または
+yarn dev
+```
 
-## Adding Your Apps
+4. ブラウザで [http://localhost:3000](http://localhost:3000) を開きます
 
-Currently, the apps are defined in the `app.py` file. In a production environment, you would want to:
-1. Set up a database to store app information
-2. Create an admin interface to add/edit apps
-3. Implement user authentication
-4. Add image upload functionality
+## 🚀 本番ビルド
 
-## Contributing
+```bash
+npm run build
+# または
+yarn build
+```
 
-Feel free to submit issues and enhancement requests!
+## 🔧 使用技術
+
+- [Next.js](https://nextjs.org/) - Reactフレームワーク
+- [TypeScript](https://www.typescriptlang.org/) - 型付き JavaScript
+- [Tailwind CSS](https://tailwindcss.com/) - CSSフレームワーク
+- [Prisma](https://www.prisma.io/) - データベースORM
+
+## 📄 ライセンス
+
+このプロジェクトは MIT ライセンスの下でオープンソース公開されています。詳細は [LICENSE](LICENSE) ファイルを参照してください。
+
+## 🤝 コントリビューション
+
+改善の提案や問題の報告は大歓迎です！プルリクエストをお待ちしております。
