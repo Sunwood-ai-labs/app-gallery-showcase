@@ -45,7 +45,7 @@ model User {
   image         String?
   username      String?   @unique
   bio           String?
-  password      String?
+  password      String
   accounts      Account[]
   sessions      Session[]
   spaces        Space[]

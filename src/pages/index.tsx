@@ -2,6 +2,7 @@ import { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import SpaceCard from '../components/SpaceCard';
+import { useState, useEffect } from 'react';
 
 const demoSpaces = [
   {
@@ -35,6 +36,16 @@ const demoSpaces = [
 ];
 
 const Home: NextPage = () => {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Head>
