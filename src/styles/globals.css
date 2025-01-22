@@ -32,16 +32,32 @@ body {
     @apply relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300;
   }
 
-  .card-gradient {
-    @apply relative flex items-center justify-center p-6;
+  .card-base {
+    @apply relative overflow-hidden rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-2xl cursor-pointer;
   }
 
-  .card-title {
-    @apply text-2xl font-bold text-white text-center break-words line-clamp-3 drop-shadow-lg;
+  .card-base .card-gradient {
+    @apply relative flex items-center justify-center p-6 transition-all duration-300 ease-in-out;
   }
 
-  .card-overlay {
-    @apply absolute inset-0 flex flex-col justify-between p-4;
+  .card-base:hover .card-gradient {
+    @apply brightness-110 contrast-125;
+  }
+
+  .card-base .card-overlay {
+    @apply absolute inset-0 flex flex-col justify-between p-4 opacity-0 transition-opacity duration-300 ease-in-out;
+  }
+
+  .card-base:hover .card-overlay {
+    @apply opacity-100 bg-black/20;
+  }
+
+  .card-base .card-title {
+    @apply text-2xl font-bold text-white text-center break-words line-clamp-3 drop-shadow-lg transition-transform duration-300 ease-in-out;
+  }
+
+  .card-base:hover .card-title {
+    @apply -translate-y-1 scale-105;
   }
 
   .card-status {
