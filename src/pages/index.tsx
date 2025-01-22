@@ -1,8 +1,13 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import SpaceCard from '../components/SpaceCard';
-import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import { useSession } from 'next-auth/react';
+
+const SpaceCard = dynamic(() => import('../components/SpaceCard'), { 
+  ssr: true,  // Ensure server-side rendering
+  loading: () => <div>Loading...</div>
+});
 
 const demoSpaces = [
   {
@@ -36,15 +41,7 @@ const demoSpaces = [
 ];
 
 const Home: NextPage = () => {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) {
-    return null;
-  }
+  const { data: session } = useSession();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -68,18 +65,28 @@ const Home: NextPage = () => {
           </nav>
         </div>
         <div className="flex items-center gap-4">
-          <Link href="/login" className="text-gray-700 hover:text-[#FF9D00] transition-colors mr-2">
-            Login
-          </Link>
-          <Link href="/signup" className="bg-[#FF9D00] text-white px-4 py-2 rounded-lg hover:bg-[#FF8A00] transition-colors mr-2">
-            Sign Up
-          </Link>
-          <Link href="/create-space" className="create-button flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-            </svg>
-            Create new Space
-          </Link>
+          {session ? (
+            <>
+              <Link href="/profile" className="text-gray-700 hover:text-[#FF9D00] transition-colors mr-2">
+                {session.user?.username || session.user?.name || 'Profile'}
+              </Link>
+              <Link href="/create-space" className="create-button flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+                </svg>
+                Create new Space
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="text-gray-700 hover:text-[#FF9D00] transition-colors mr-2">
+                Login
+              </Link>
+              <Link href="/signup" className="bg-[#FF9D00] text-white px-4 py-2 rounded-lg hover:bg-[#FF8A00] transition-colors mr-2">
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
       </header>
 
@@ -89,12 +96,7 @@ const Home: NextPage = () => {
           <div>
             <p className="text-gray-600 mt-1">Discover amazing AI apps made by the community!</p>
           </div>
-          <Link href="/profile" className="create-button flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-            </svg>
-            My Profile
-          </Link>
+          {/* Removed redundant My Profile button */}
         </div>
 
         {/* Search and Filters */}
