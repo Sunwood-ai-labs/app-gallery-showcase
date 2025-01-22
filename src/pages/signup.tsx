@@ -2,10 +2,6 @@ import React, { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { PrismaClient } from '@prisma/client';
-import * as bcrypt from 'bcryptjs';
-
-const prisma = new PrismaClient();
 
 const Signup: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -19,35 +15,60 @@ const Signup: React.FC = () => {
     e.preventDefault();
     setError('');
 
-    // Basic validation
+    // Client-side validation
+    if (!username || username.length < 3) {
+      setError('Username must be at least 3 characters long');
+      return;
+    }
+
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
-    try {
-      // Hash the password
-      const hashedPassword = await bcrypt.hash(password, 10);
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long');
+      return;
+    }
 
-      // Create user in database
-      const user = await prisma.user.create({
-        data: {
+    try {
+      // Send signup request to API route
+      const response = await fetch('/api/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           username,
           email,
-          password: hashedPassword,
-        }
+          password,
+        }),
       });
 
-      // Redirect to login or directly sign in
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle error response
+        setError(data.message || data.error || 'An unexpected error occurred');
+        
+        // Log additional error details to console for debugging
+        if (data.details) {
+          console.error('Signup Error Details:', data.details);
+        }
+        return;
+      }
+
+      // Successful signup
+      console.log('Signup successful:', data);
       router.push('/login');
     } catch (err: any) {
-      if (err.code === 'P2002') {
-        // Unique constraint violation
-        setError('Username or email already exists');
-      } else {
-        setError('An error occurred during signup');
-      }
-      console.error(err);
+      console.error('Signup error:', err);
+      setError('An unexpected error occurred. Please try again.');
     }
   };
 
