@@ -75,3 +75,18 @@ yarn build
 ## 🤝 コントリビューション
 
 改善の提案や問題の報告は大歓迎です！プルリクエストをお待ちしております。
+
+## 🌊 Windsurf Editor Performance Verification Project
+
+> [!NOTE]
+このリポジトリは、Windsurf AIエディタの性能と機能を検証するための実験的プロジェクトです。Windsurf は革新的なAIコーディング支援ツールであり、このプロジェクトはその capabilities と効率性を実証することを目的としています。
+*This repository is an experimental project designed to verify the performance and capabilities of the Windsurf AI Editor. It serves as a comprehensive test bed to demonstrate the editor's advanced AI-assisted coding features and development efficiency.*
+
+### 🚀 プロジェクトの目的 / Project Objectives
+- Windsurf エディタの AI コーディング支援機能の実証
+- リアルタイムのコード生成と提案の検証
+- AI と開発者の協働ワークフローの探求
+
+*Demonstrate Windsurf editor's AI coding assistance capabilities*
+*Validate real-time code generation and suggestions*
+*Explore collaborative workflows between AI and developers*
