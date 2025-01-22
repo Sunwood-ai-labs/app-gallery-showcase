@@ -55,12 +55,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         email,
         password: hashedPassword,
         name: username,
+        bio: `こんにちは！私は${username}です。`, // Default bio
+        image: `https://api.dicebear.com/7.x/adventurer/svg?seed=${username}` // Generate default avatar
       },
       select: {
         id: true,
         username: true,
         email: true,
         name: true,
+        bio: true,
+        image: true
       }
     });
 
@@ -71,7 +75,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         id: user.id, 
         username: user.username, 
         email: user.email,
-        name: user.name
+        name: user.name,
+        bio: user.bio,
+        image: user.image,
+        profile: {
+          bio: user.bio,
+          image: user.image
+        }
       } 
     });
   } catch (err: any) {
