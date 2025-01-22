@@ -41,14 +41,40 @@ export const authOptions: AuthOptions = {
         return {
           id: user.id,
           email: user.email,
-          name: user.name
+          name: user.name,
+          username: user.username,
+          bio: user.bio,
+          image: user.image
         };
       }
     }),
     // Add other providers like GitHub, Google, etc. if needed
   ],
   session: {
-    strategy: 'jwt'
+    strategy: 'database',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  events: {
+    async signIn(message) {
+      console.log('サインイン:', message);
+    },
+    async signOut(message) {
+      console.log('サインアウト:', message);
+    },
+    async createUser(message) {
+      console.log('ユーザー作成:', message);
+    }
+  },
+  logger: {
+    error(code, metadata) {
+      console.error('NextAuth Error:', { code, metadata });
+    },
+    warn(code) {
+      console.warn('NextAuth Warning:', code);
+    },
+    debug(code, metadata) {
+      console.debug('NextAuth Debug:', { code, metadata });
+    }
   },
   pages: {
     signIn: '/login',
@@ -61,6 +87,9 @@ export const authOptions: AuthOptions = {
         session.user.id = token.id;
         session.user.name = token.name;
         session.user.email = token.email;
+        session.user.username = token.username;
+        session.user.bio = token.bio;
+        session.user.image = token.image;
       }
       return session;
     },
@@ -69,6 +98,9 @@ export const authOptions: AuthOptions = {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
+        token.username = user.username;
+        token.bio = user.bio;
+        token.image = user.image;
       }
       return token;
     }
