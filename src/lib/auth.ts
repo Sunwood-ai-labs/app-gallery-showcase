@@ -1,0 +1,79 @@
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { PrismaClient } from "@prisma/client";
+import NextAuth, { AuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import * as bcrypt from 'bcryptjs';
+
+const prisma = new PrismaClient();
+
+export const authOptions: AuthOptions = {
+  adapter: PrismaAdapter(prisma),
+  providers: [
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email }
+        });
+
+        if (!user) {
+          return null;
+        }
+
+        // Use bcryptjs for password comparison
+        const isValidPassword = await bcrypt.compare(
+          credentials.password, 
+          user.password || ''
+        );
+
+        if (!isValidPassword) {
+          return null;
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name
+        };
+      }
+    }),
+    // Add other providers like GitHub, Google, etc. if needed
+  ],
+  session: {
+    strategy: 'jwt'
+  },
+  pages: {
+    signIn: '/login',
+    signOut: '/login',
+    error: '/login'
+  },
+  callbacks: {
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id;
+        session.user.name = token.name;
+        session.user.email = token.email;
+      }
+      return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.name = user.name;
+        token.email = user.email;
+      }
+      return token;
+    }
+  },
+  secret: process.env.NEXTAUTH_SECRET || 'your_super_secret_key'
+};
+
+export default NextAuth(authOptions);
