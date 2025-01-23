@@ -7,6 +7,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
@@ -27,38 +28,48 @@ export default function Navbar() {
           カードショーケース
         </Link>
         <div className="flex items-center space-x-4">
-          {status === 'authenticated' && session?.user ? (
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                {session.user.image && (
-                  <Image 
-                    src={session.user.image} 
-                    alt="プロフィール画像" 
-                    width={32} 
-                    height={32} 
-                    className="rounded-full"
-                  />
-                )}
-                <span className="text-sm font-medium">
-                  {session.user.username || session.user.name || 'マイアカウント'}
-                </span>
-              </div>
-              <Link 
-                href="/dashboard" 
-                className={cn(buttonVariants({ variant: "outline", size: "sm" }), "mr-2")}
-              >
-                ダッシュボード
-              </Link>
-              <LogoutButton />
-            </div>
-          ) : (
-            <Link 
-              href="/login" 
-              className={buttonVariants({ variant: "default", size: "sm" })}
-            >
-              ログイン
+          <div className="flex items-center space-x-2">
+            <Link href="/" className={buttonVariants({ variant: "ghost", size: "sm" })}>
+              ホーム
             </Link>
-          )}
+            <Link href="/spaces" className={buttonVariants({ variant: "ghost", size: "sm" })}>
+              スペース一覧
+            </Link>
+            {status === 'authenticated' && session?.user ? (
+              <>
+                <Link href="/profile" className={buttonVariants({ variant: "ghost", size: "sm" })}>
+                  プロフィール
+                </Link>
+                <Link href="/create-space" className={buttonVariants({ variant: "ghost", size: "sm" })}>
+                  スペース作成
+                </Link>
+                <div className="flex items-center space-x-2">
+                  {session?.user?.image && (
+                    <Image
+                      src={session?.user?.image}
+                      alt="プロフィール画像" 
+                      width={32} 
+                      height={32} 
+                      className="rounded-full"
+                    />
+                  )}
+                  <span className="text-sm font-medium">
+                    {session.user.username || session.user.name || 'マイアカウント'}  
+                  </span>
+                </div>
+                <LogoutButton />
+              </>
+            ) : (
+              <>
+                <Link href="/signup" className={buttonVariants({ variant: "ghost", size: "sm" })}>
+                  サインアップ
+                </Link>
+                <Link href="/login" className={buttonVariants({ variant: "default", size: "sm" })}>
+                  ログイン
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </nav>
