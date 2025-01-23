@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { LogoutButton } from "./LogoutButton";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export default async function Navbar() {
   const session = await getServerSession(authOptions);
@@ -15,8 +16,22 @@ export default async function Navbar() {
           カードショーケース
         </Link>
         <div className="flex items-center space-x-4">
-          {session ? (
-            <>
+          {session?.user ? (
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                {session.user.image && (
+                  <Image 
+                    src={session.user.image} 
+                    alt="プロフィール画像" 
+                    width={32} 
+                    height={32} 
+                    className="rounded-full"
+                  />
+                )}
+                <span className="text-sm font-medium">
+                  {session.user.username || session.user.name || 'マイアカウント'}
+                </span>
+              </div>
               <Link 
                 href="/dashboard" 
                 className={cn(buttonVariants({ variant: "outline", size: "sm" }), "mr-2")}
@@ -24,7 +39,7 @@ export default async function Navbar() {
                 ダッシュボード
               </Link>
               <LogoutButton />
-            </>
+            </div>
           ) : (
             <Link 
               href="/login" 
