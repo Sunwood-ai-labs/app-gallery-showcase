@@ -5,6 +5,7 @@ import { Toaster } from 'sonner';
 import '../globals.css';
 import { SessionProvider } from 'next-auth/react';
 import { ReactNode } from 'react';
+import Navbar from '@/components/Navbar';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,12 +18,13 @@ export default function RootLayout({
     <html lang="ja" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
         <SessionProvider>
+          <Navbar />
           {children}
-          <Toaster 
-            position="top-right" 
-            richColors 
-            closeButton 
-            duration={3000} 
+          <Toaster
+            position="top-right"
+            richColors
+            closeButton
+            duration={3000}
           />
         </SessionProvider>
       </body>
