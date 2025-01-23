@@ -1,13 +1,24 @@
+"use client";
+
 import Link from "next/link";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth";
+import { useSession } from "next-auth/react";
 import { LogoutButton } from "./LogoutButton";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
-export default async function Navbar() {
-  const session = await getServerSession(authOptions);
+export default function Navbar() {
+  const { data: session, status } = useSession();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md z-50 shadow-sm">
@@ -16,7 +27,7 @@ export default async function Navbar() {
           カードショーケース
         </Link>
         <div className="flex items-center space-x-4">
-          {session?.user ? (
+          {status === 'authenticated' && session?.user ? (
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 {session.user.image && (
