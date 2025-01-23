@@ -152,3 +152,4 @@ generated/
 *.sqlite3
 .SourceSageAssets
 .gaiah_commit_message.txt
+.SourceSageAssets/Repository_summary.md
