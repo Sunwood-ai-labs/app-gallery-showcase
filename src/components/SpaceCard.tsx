@@ -66,6 +66,10 @@ const SpaceCard: React.FC<SpaceCardProps & { index: number }> = ({
                   width={24} 
                   height={24} 
                   className="rounded-full"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = '/default-avatar.png'; // デフォルトのアバター画像
+                  }}
                 />
               )}
               <span>@{author.username || author.name}</span>
