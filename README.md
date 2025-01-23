@@ -31,6 +31,8 @@
 
 ## 📦 セットアップ
 
+[セットアップ詳細](docs/SETUP.md)
+
 1. リポジトリをクローン:
 ```bash
 git clone https://github.com/Sunwood-ai-labs/hf-space-card-showcase.git
