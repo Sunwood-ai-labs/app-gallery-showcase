@@ -3,59 +3,105 @@ import Head from 'next/head';
 import Link from 'next/link';
 import SpaceCard from '../components/SpaceCard';
 
-const allSpaces = [
+interface Author {
+  name: string;
+  username: string;
+  image: string;
+}
+
+interface Space {
+  title: string;
+  author: Author;
+  likes: number;
+  daysAgo: number;
+  runtime: string;
+}
+
+const allSpaces: Space[] = [
   {
     title: 'Kokoro TTS',
-    author: 'hexgrad',
+    author: {
+      name: 'hexgrad',
+      username: 'hexgrad',
+      image: 'https://avatars.githubusercontent.com/u/example1'
+    },
     likes: 1220,
     daysAgo: 5,
     runtime: 'ZENO'
   },
   {
     title: 'TransPixar',
-    author: 'wilkemang',
+    author: {
+      name: 'wilkemang',
+      username: 'wilkemang',
+      image: 'https://avatars.githubusercontent.com/u/example2'
+    },
     likes: 874,
     daysAgo: 12,
     runtime: 'ZENO'
   },
   {
     title: 'FitDIT',
-    author: 'BoyuanJiang',
+    author: {
+      name: 'BoyuanJiang',
+      username: 'BoyuanJiang',
+      image: 'https://avatars.githubusercontent.com/u/example3'
+    },
     likes: 125,
     daysAgo: 3,
     runtime: 'ZENO'
   },
   {
     title: 'VITPose Transformers',
-    author: 'hysts',
+    author: {
+      name: 'hysts',
+      username: 'hysts',
+      image: 'https://avatars.githubusercontent.com/u/example4'
+    },
     likes: 68,
     daysAgo: 2,
     runtime: 'ZENO'
   },
   {
     title: 'AI Image Generator',
-    author: 'midjourney',
+    author: {
+      name: 'midjourney',
+      username: 'midjourney',
+      image: 'https://avatars.githubusercontent.com/u/example5'
+    },
     likes: 456,
     daysAgo: 15,
     runtime: 'CUDA'
   },
   {
     title: 'Language Translator',
-    author: 'nlp_expert',
+    author: {
+      name: 'nlp_expert',
+      username: 'nlp_expert',
+      image: 'https://avatars.githubusercontent.com/u/example6'
+    },
     likes: 234,
     daysAgo: 8,
     runtime: 'TPU'
   },
   {
     title: 'Music Composition AI',
-    author: 'soundwave',
+    author: {
+      name: 'soundwave',
+      username: 'soundwave',
+      image: 'https://avatars.githubusercontent.com/u/example7'
+    },
     likes: 312,
     daysAgo: 20,
     runtime: 'ZENO'
   },
   {
     title: 'Code Completion Tool',
-    author: 'codegen',
+    author: {
+      name: 'codegen',
+      username: 'codegen',
+      image: 'https://avatars.githubusercontent.com/u/example8'
+    },
     likes: 567,
     daysAgo: 10,
     runtime: 'CPU'
@@ -68,7 +114,7 @@ const Spaces: React.FC = () => {
 
   const filteredSpaces = allSpaces.filter(space => 
     space.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    space.author.toLowerCase().includes(searchTerm.toLowerCase())
+    space.author.username.toLowerCase().includes(searchTerm.toLowerCase())
   ).sort((a, b) => {
     switch (sortBy) {
       case 'latest':
