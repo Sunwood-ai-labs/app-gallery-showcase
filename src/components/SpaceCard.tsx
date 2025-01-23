@@ -1,8 +1,13 @@
 import React from 'react';
+import Image from 'next/image';
 
 interface SpaceCardProps {
   title: string;
-  author: string;
+  author: {
+    name: string;
+    image?: string;
+    username?: string;
+  };
   likes: number;
   daysAgo: number;
   isRunning?: boolean;
@@ -31,7 +36,7 @@ const SpaceCard: React.FC<SpaceCardProps & { index: number }> = ({
   index
 }) => {
   return (
-    <div className="card-base">
+    <div className="card-base relative group">
       <div className={`card-gradient bg-gradient-to-br ${getGradient(index)} flex items-center justify-center p-6`} style={{ aspectRatio: '16/9' }}>
         <h3 className="card-title text-2xl font-bold text-white text-center break-words line-clamp-3 drop-shadow-lg">
           {title}
@@ -53,8 +58,19 @@ const SpaceCard: React.FC<SpaceCardProps & { index: number }> = ({
         </div>
         <div className="card-footer mt-auto">
           <div className="flex justify-between items-center text-sm text-white/80">
-            <span>@{author}</span>
-            <span>{daysAgo} days ago</span>
+            <div className="flex items-center space-x-2">
+              {author.image && (
+                <Image 
+                  src={author.image} 
+                  alt={`${author.name}のプロフィール画像`} 
+                  width={24} 
+                  height={24} 
+                  className="rounded-full"
+                />
+              )}
+              <span>@{author.username || author.name}</span>
+            </div>
+            <span>{daysAgo} 日前</span>
           </div>
         </div>
       </div>
