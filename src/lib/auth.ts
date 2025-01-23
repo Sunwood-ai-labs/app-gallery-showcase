@@ -51,7 +51,7 @@ export const authOptions: AuthOptions = {
     // Add other providers like GitHub, Google, etc. if needed
   ],
   session: {
-    strategy: 'database',
+    strategy: 'jwt', 
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   events: {
