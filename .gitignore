@@ -150,3 +150,5 @@ node_modules/@prisma
 generated/
 *.sqlite
 *.sqlite3
+.SourceSageAssets
+.gaiah_commit_message.txt
