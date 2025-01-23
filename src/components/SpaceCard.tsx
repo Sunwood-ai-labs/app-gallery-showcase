@@ -59,19 +59,6 @@ const SpaceCard: React.FC<SpaceCardProps & { index: number }> = ({
         <div className="card-footer mt-auto">
           <div className="flex justify-between items-center text-sm text-white/80">
             <div className="flex items-center space-x-2">
-              {author.image && (
-                <Image 
-                  src={author.image} 
-                  alt={`${author.name}のプロフィール画像`} 
-                  width={24} 
-                  height={24} 
-                  className="rounded-full"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = '/default-avatar.png'; // デフォルトのアバター画像
-                  }}
-                />
-              )}
               <span>@{author.username || author.name}</span>
             </div>
             <span>{daysAgo} 日前</span>
