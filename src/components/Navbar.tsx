@@ -31,7 +31,7 @@ export default function Navbar() {
             className="text-2xl font-bold text-gray-800 flex items-center space-x-2 transform transition-transform duration-300 hover:scale-105"
           >
             <span>🤗</span>
-            <span className="hidden md:inline">Spaces</span>
+            <span className="hidden md:inline">HF Like Spaces Gallery</span>
           </Link>
         </div>
 
