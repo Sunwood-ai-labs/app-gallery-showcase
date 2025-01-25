@@ -19,7 +19,9 @@ export default function RootLayout({
       <body className={inter.className} suppressHydrationWarning>
         <SessionProvider>
           <Navbar />
-          {children}
+          <main className="pt-20">
+            {children}
+          </main>
           <Toaster
             position="top-right"
             richColors
