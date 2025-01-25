@@ -1,32 +1,12 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
-import dynamic from 'next/dynamic';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
-
-const SpaceCard = dynamic(() => import('../components/SpaceCard'), {
-  ssr: true,
-  loading: () => <div>Loading...</div>
-});
-
-interface Space {
-  id: string;
-  title: string;
-  subtitle: string;
-  url: string;
-  author: {
-    name: string;
-    username: string;
-    image: string;
-  };
-  likes: number;
-  daysAgo: number;
-  runtime: string;
-  category: string;
-}
+import { Space } from '@/types/space';
+import { SpaceGrid } from '@/components/spaces/SpaceGrid';
 
 const Home: NextPage = () => {
-  const { data: session } = useSession(); // dataをsessionとしてリネーム
+  const { data: session } = useSession();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('trending');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -54,7 +34,7 @@ const Home: NextPage = () => {
     .sort((a: Space, b: Space) => {
       switch (sortBy) {
         case 'latest':
-          return a.daysAgo - b.daysAgo;
+          return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
         case 'likes':
           return b.likes - a.likes;
         case 'trending':
@@ -148,35 +128,20 @@ const Home: NextPage = () => {
             {sortBy === 'trending' && <span className="text-orange-500">🔥</span>}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredAndSortedSpaces.slice(0, 4).map((space: Space, index: number) => (
-              <SpaceCard
-                key={space.id}
-                {...space}
-                index={index}
-              />
-            ))}
-          </div>
+          <SpaceGrid
+            spaces={filteredAndSortedSpaces.slice(0, 4)}
+            title=""
+            limit={4}
+          />
         </section>
 
         {/* All Spaces Grid */}
-        <section>
+        <section className="mt-12">
           <h2 className="text-xl font-semibold mb-6">All Spaces</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredAndSortedSpaces.map((space: Space, index: number) => (
-              <SpaceCard
-                key={space.id}
-                {...space}
-                index={index}
-              />
-            ))}
-          </div>
-
-          {filteredAndSortedSpaces.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-gray-500">No spaces found matching your search.</p>
-            </div>
-          )}
+          <SpaceGrid
+            spaces={filteredAndSortedSpaces}
+            title=""
+          />
         </section>
       </main>
     </div>

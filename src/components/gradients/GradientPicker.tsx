@@ -30,15 +30,49 @@ export const getGradientValue = (gradient: string, startColor: string, endColor:
   return gradient;
 };
 
+const getTailwindGradientColors = (gradient: string) => {
+  const fromClass = gradient.split(' ')[0];
+  const toClass = gradient.split(' ')[1];
+  
+  // Tailwindのグラデーションカラーマップ
+  const colorMap: { [key: string]: string } = {
+    'from-purple-600': '#9333ea',
+    'to-pink-500': '#ec4899',
+    'from-blue-500': '#3b82f6',
+    'to-teal-400': '#2dd4bf',
+    'from-red-500': '#ef4444',
+    'to-orange-400': '#fb923c',
+    'from-green-500': '#22c55e',
+    'from-indigo-500': '#6366f1',
+    'to-purple-500': '#a855f7',
+    'from-yellow-400': '#facc15',
+    'to-orange-500': '#f97316',
+    'from-green-400': '#4ade80',
+    'to-blue-500': '#3b82f6',
+    'from-pink-500': '#ec4899',
+    'to-rose-500': '#f43f5e',
+    'from-violet-600': '#7c3aed',
+    'to-yellow-400': '#facc15',
+    'from-emerald-400': '#34d399',
+    'to-cyan-400': '#22d3ee'
+  };
+
+  return {
+    fromColor: colorMap[fromClass] || '#000000',
+    toColor: colorMap[toClass] || '#000000'
+  };
+};
+
 export const getPreviewStyle = (gradient: string, startColor: string, endColor: string) => {
   if (gradient === 'custom') {
     return {
       background: `linear-gradient(to right, ${startColor}, ${endColor})`
     };
   }
-  const [fromColor, toColor] = gradient.split(' ');
+  
+  const { fromColor, toColor } = getTailwindGradientColors(gradient);
   return {
-    background: `linear-gradient(to right, var(--${fromColor.replace('from-', '')}), var(--${toColor.replace('to-', '')}))`
+    background: `linear-gradient(to right, ${fromColor}, ${toColor})`
   };
 };
 
@@ -96,10 +130,12 @@ export const GradientPicker: React.FC<GradientPickerProps> = ({
         )}
 
         {/* グラデーションプレビュー */}
-        <div 
-          className="w-full h-16 rounded-lg shadow-inner" 
-          style={getPreviewStyle(gradient, startColor, endColor)} 
-        />
+        <div className="w-full h-16 rounded-lg shadow-inner border border-gray-200">
+          <div 
+            className="w-full h-full"
+            style={getPreviewStyle(gradient, startColor, endColor)} 
+          />
+        </div>
       </div>
     </div>
   );

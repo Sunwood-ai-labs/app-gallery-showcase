@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { SearchFilter } from '@/components/search/SearchFilter';
 import { SpaceGrid } from '@/components/spaces/SpaceGrid';
-import { Space, demoSpaces } from '@/types/space';
+import { Space } from '@/types/space';
 
 const filterAndSortSpaces = (
   spaces: Space[],
@@ -18,7 +18,7 @@ const filterAndSortSpaces = (
     .sort((a, b) => {
       switch (sortBy) {
         case 'latest':
-          return a.daysAgo - b.daysAgo;
+          return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
         case 'likes':
           return b.likes - a.likes;
         default: // trending
@@ -31,8 +31,19 @@ const filterAndSortSpaces = (
 const Spaces: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('trending');
+  const [spaces, setSpaces] = useState<Space[]>([]);
 
-  const filteredAndSortedSpaces = filterAndSortSpaces(demoSpaces, searchTerm, sortBy);
+  useEffect(() => {
+    const fetchSpaces = async () => {
+      const response = await fetch('/api/spaces');
+      const data = await response.json();
+      setSpaces(data);
+    };
+
+    fetchSpaces();
+  }, []);
+
+  const filteredAndSortedSpaces = filterAndSortSpaces(spaces, searchTerm, sortBy);
 
   return (
     <div className="min-h-screen bg-gray-50">

@@ -24,9 +24,8 @@ export const SpaceGrid: React.FC<SpaceGridProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {displaySpaces.map((space, index) => (
           <SpaceCard
-            key={`${space.title}-${index}`}
+            key={space.id}
             {...space}
-            index={index}
           />
         ))}
       </div>
