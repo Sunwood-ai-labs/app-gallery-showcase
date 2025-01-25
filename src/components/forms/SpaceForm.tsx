@@ -1,0 +1,113 @@
+import React from 'react';
+
+interface SpaceFormFieldsProps {
+  title: string;
+  setTitle: (value: string) => void;
+  subtitle: string;
+  setSubtitle: (value: string) => void;
+  url: string;
+  setUrl: (value: string) => void;
+  runtime: string;
+  setRuntime: (value: string) => void;
+  category: string;
+  setCategory: (value: string) => void;
+}
+
+export const SpaceFormFields: React.FC<SpaceFormFieldsProps> = ({
+  title,
+  setTitle,
+  subtitle,
+  setSubtitle,
+  url,
+  setUrl,
+  runtime,
+  setRuntime,
+  category,
+  setCategory,
+}) => {
+  return (
+    <>
+      <div>
+        <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+          スペース名
+        </label>
+        <input
+          type="text"
+          id="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
+          placeholder="スペースの名前を入力してください"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="subtitle" className="block text-sm font-medium text-gray-700 mb-2">
+          サブタイトル
+        </label>
+        <input
+          type="text"
+          id="subtitle"
+          value={subtitle}
+          onChange={(e) => setSubtitle(e.target.value)}
+          required
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
+          placeholder="スペースの簡単な説明を入力してください"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="url" className="block text-sm font-medium text-gray-700 mb-2">
+          URL
+        </label>
+        <input
+          type="url"
+          id="url"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          required
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
+          placeholder="https://example.com"
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-6">
+        <div>
+          <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
+            カテゴリー
+          </label>
+          <select
+            id="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
+          >
+            <option value="Audio">Audio</option>
+            <option value="Image">Image</option>
+            <option value="Text">Text</option>
+            <option value="Video">Video</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="runtime" className="block text-sm font-medium text-gray-700 mb-2">
+            ランタイム
+          </label>
+          <select
+            id="runtime"
+            value={runtime}
+            onChange={(e) => setRuntime(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
+          >
+            <option value="ZENO">ZENO</option>
+            <option value="CUDA">CUDA</option>
+            <option value="CPU">CPU</option>
+            <option value="TPU">TPU</option>
+          </select>
+        </div>
+      </div>
+    </>
+  );
+};
