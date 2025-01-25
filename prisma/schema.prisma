@@ -75,6 +75,7 @@ model Space {
   startColor  String?  // カスタムグラデーションの開始色
   endColor    String?  // カスタムグラデーションの終了色
   likes       Like[]
+  clicks      Click[]
   createdAt   DateTime @default(now())
 }
 
@@ -87,4 +88,13 @@ model Like {
   createdAt DateTime @default(now())
 
   @@unique([userId, spaceId])
+}
+
+model Click {
+  id        String   @id @default(cuid())
+  space     Space    @relation(fields: [spaceId], references: [id])
+  spaceId   String
+  createdAt DateTime @default(now())
+
+  @@index([spaceId])
 }
