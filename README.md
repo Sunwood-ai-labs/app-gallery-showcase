@@ -46,14 +46,49 @@ npm install
 yarn install
 ```
 
-3. 開発サーバーを起動:
+3. データベースをセットアップ:
+```bash
+# データベースを初期化（初回のみ）
+npx prisma db push
+
+# スキーマ変更後にデータベースを更新
+npx prisma db push
+
+# （オプション）Prisma Studioでデータを確認
+npx prisma studio
+```
+
+4. 開発サーバーを起動:
 ```bash
 npm run dev
 # または
 yarn dev
 ```
 
-4. ブラウザで [http://localhost:3000](http://localhost:3000) を開きます
+5. ブラウザで [http://localhost:3000](http://localhost:3000) を開きます
+
+## 💾 データベース管理
+
+このプロジェクトはPrismaとSQLiteを使用しています。データベースに関する主な操作：
+
+### データベースの初期化
+```bash
+npx prisma db push
+```
+
+### スキーマ変更後の更新
+スキーマを変更した場合（新しいフィールドの追加など）は、以下のコマンドを実行してデータベースを更新します：
+```bash
+npx prisma db push
+```
+
+### データの確認
+Prisma Studioを使用してデータベースの内容を確認・編集できます：
+```bash
+npx prisma studio
+```
+
+詳細なデータベース操作については[セットアップ詳細](docs/SETUP.md)を参照してください。
 
 ## 🚀 本番ビルド
 

@@ -39,7 +39,7 @@ const LoginPage = () => {
         console.error("Login failed:", result.error);
       } else {
         toast.success("ログインしました");
-        router.push("/dashboard");
+        router.push("/");
       }
     } catch (error: any) {
       console.error("Login error:", error);

@@ -63,10 +63,13 @@ model VerificationToken {
 model Space {
   id          String   @id @default(cuid())
   title       String
+  subtitle    String
   description String?
+  url         String
   author      User     @relation(fields: [authorId], references: [id])
   authorId    String
   runtime     String
+  category    String
   visibility  String   @default("public")
   likes       Like[]
   createdAt   DateTime @default(now())

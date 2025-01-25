@@ -12,6 +12,8 @@ const SpaceCard = dynamic(() => import('../components/SpaceCard'), {
 const demoSpaces = [
   {
     title: 'Kokoro TTS',
+    subtitle: '日本語音声合成エンジン',
+    url: 'https://huggingface.co/spaces/hexgrad/kokoro-tts',
     author: {
       name: 'hexgrad',
       username: 'hexgrad',
@@ -24,6 +26,8 @@ const demoSpaces = [
   },
   {
     title: 'TransPixar',
+    subtitle: 'ピクサー風画像変換AI',
+    url: 'https://huggingface.co/spaces/wilkemang/transpixar',
     author: {
       name: 'wilkemang',
       username: 'wilkemang',
@@ -36,6 +40,8 @@ const demoSpaces = [
   },
   {
     title: 'FitDIT',
+    subtitle: 'AIフィットネスコーチ',
+    url: 'https://huggingface.co/spaces/BoyuanJiang/fitdit',
     author: {
       name: 'BoyuanJiang',
       username: 'BoyuanJiang',
@@ -48,6 +54,8 @@ const demoSpaces = [
   },
   {
     title: 'VITPose Transformers',
+    subtitle: '高精度ポーズ推定',
+    url: 'https://huggingface.co/spaces/hysts/vitpose',
     author: {
       name: 'hysts',
       username: 'hysts',
