@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { getTailwindGradientColors } from '@/components/gradients/GradientPicker';
 
 interface SpaceCardProps {
+  id: string;
   title: string;
   subtitle: string;
   url: string;
@@ -17,7 +18,8 @@ interface SpaceCardProps {
   gradient?: string;
 }
 
-const SpaceCard: React.FC<SpaceCardProps> = ({
+const SpaceCard: React.FC<SpaceCardProps> = ({  
+  id,
   title,
   subtitle,
   url,
@@ -28,6 +30,48 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
   runtime,
   gradient
 }) => {
+  const [clickCount, setClickCount] = useState(likes);
+
+  useEffect(() => {
+    const fetchClickCount = async () => {
+      try {
+        const response = await fetch(`/api/spaces/click?spaceId=${id}`);
+        const data = await response.json();
+        if (response.ok) {
+          setClickCount(data.clickCount);
+        }
+      } catch (error) {
+        console.error('Error fetching click count:', error);
+      }
+    };
+
+    fetchClickCount();
+  }, [id]);
+
+  const recordClick = async () => {
+    try {
+      const response = await fetch('/api/spaces/click', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ spaceId: id }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setClickCount(data.clickCount);
+      }
+    } catch (error) {
+      console.error('Error recording click:', error);
+    }
+  };
+
+  const handleCardClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    recordClick();
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   const getGradientStyle = (gradientValue?: string) => {
     if (!gradientValue) {
       return {
@@ -54,8 +98,11 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
   };
 
   return (
-    <div className="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 cursor-pointer">
-      {/* Card background with gradient */}
+    <a
+      href="#"
+      onClick={handleCardClick}
+      className="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 cursor-pointer block"
+    >
       <div
         className="relative aspect-[16/9] flex flex-col items-center justify-center p-6 transition-all duration-300 ease-in-out group-hover:brightness-110 group-hover:contrast-125"
         style={getGradientStyle(gradient)}>
@@ -84,12 +131,12 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
               {category}
             </span>
           </div>
-          <button className="flex items-center space-x-1 text-white bg-black/40 backdrop-blur-sm px-2 py-1 rounded-full transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 ease-out hover:bg-black/60">
+          <div className="flex items-center space-x-1 text-white bg-black/40 backdrop-blur-sm px-2 py-1 rounded-full transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 ease-out">
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9.653 16.915l-.005-.003-.019-.01a20.759 20.759 0 01-1.162-.682 22.045 22.045 0 01-2.582-1.9C4.045 12.733 2 10.352 2 7.5a4.5 4.5 0 018-2.828A4.5 4.5 0 0118 7.5c0 2.852-2.044 5.233-3.885 6.82a22.049 22.049 0 01-3.744 2.582l-.019.01-.005.003h-.002a.739.739 0 01-.69.001l-.002-.001z" />
+              <path d="M15.5 4.5a3.5 3.5 0 00-5-3.5c-1.5 0-3 .6-4 2-1-1.4-2.5-2-4-2a3.5 3.5 0 00-3.5 3.5c0 1.8.7 3.4 2.1 4.6l7.4 7.4 7.4-7.4c1.4-1.2 2.1-2.8 2.1-4.6z"/>
             </svg>
-            <span>{likes}</span>
-          </button>
+            <span>{clickCount || 0}回</span>
+          </div>
         </div>
 
         <div className="flex justify-between items-center text-sm text-white/90 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 ease-out delay-100">
@@ -99,7 +146,7 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
           <span className="text-white/80">{daysAgo} 日前</span>
         </div>
       </div>
-    </div>
+    </a>
   );
 };
 
