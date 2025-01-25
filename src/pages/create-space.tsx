@@ -11,6 +11,7 @@ const CreateSpace: React.FC = () => {
   const [url, setUrl] = useState('');
   const [runtime, setRuntime] = useState('ZENO');
   const [category, setCategory] = useState('Audio');
+  const [gradient, setGradient] = useState('from-purple-600 to-pink-500'); // デフォルトグラデーション
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,6 +28,7 @@ const CreateSpace: React.FC = () => {
           url,
           runtime,
           category,
+          gradient,
         }),
       });
 
@@ -146,6 +148,25 @@ const CreateSpace: React.FC = () => {
                 <option value="TPU">TPU</option>
               </select>
             </div>
+          </div>
+
+          <div>
+            <label htmlFor="gradient" className="block text-sm font-medium text-gray-700 mb-2">
+              グラデーション
+            </label>
+            <select
+              id="gradient"
+              value={gradient}
+              onChange={(e) => setGradient(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
+            >
+              <option value="from-purple-600 to-pink-500">パープル/ピンク</option>
+              <option value="from-blue-500 to-teal-400">ブルー/ティール</option>
+              <option value="from-red-500 to-orange-400">レッド/オレンジ</option>
+              <option value="from-green-500 to-teal-400">グリーン/ティール</option>
+              <option value="from-indigo-500 to-purple-500">インディゴ/パープル</option>
+              <option value="from-yellow-400 to-orange-500">イエロー/オレンジ</option>
+            </select>
           </div>
 
           <div>
