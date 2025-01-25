@@ -35,17 +35,41 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    // Create space
+    // グラデーションの処理
+    const gradientData: {
+      gradient: string;
+      startColor?: string;
+      endColor?: string;
+    } = {
+      gradient: req.body.gradient
+    };
+
+    if (req.body.gradient?.startsWith('from-[')) {
+      // カスタムグラデーションの場合
+      const startMatch = req.body.gradient.match(/from-\[(.*?)\]/);
+      const endMatch = req.body.gradient.match(/to-\[(.*?)\]/);
+      
+      if (startMatch && endMatch) {
+        gradientData.startColor = startMatch[1];
+        gradientData.endColor = endMatch[1];
+      }
+    }
+
+    // Create space with updated data
+    const spaceData = {
+      title,
+      subtitle,
+      url,
+      runtime,
+      category,
+      authorId: session.user.id,
+      visibility: 'public'
+    };
+
     const space = await prisma.space.create({
       data: {
-        title,
-        subtitle,
-        url,
-        runtime,
-        category,
-        gradient,
-        authorId: session.user.id,
-        visibility: 'public'
+        ...spaceData,
+        ...gradientData
       }
     });
 
@@ -53,7 +77,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       message: 'スペースが作成されました', 
       space
     });
-
   } catch (err: any) {
     console.error('Space作成エラー:', err);
     return res.status(500).json({ 
