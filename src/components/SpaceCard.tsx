@@ -19,8 +19,8 @@ interface SpaceCardProps {
   category: string;
   author: {
     name: string;
-    image?: string;
-    username?: string;
+    image: string;
+    username: string;
   };
   likes: number;
   daysAgo: number;
