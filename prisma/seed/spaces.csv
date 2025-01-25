@@ -1,0 +1,9 @@
+title,subtitle,url,category,runtime,authorId
+Kokoro TTS,日本語音声合成エンジン,https://huggingface.co/spaces/hexgrad/kokoro-tts,Audio,ZENO,hexgrad
+TransPixar,ピクサー風画像変換AI,https://huggingface.co/spaces/wilkemang/transpixar,Image,ZENO,wilkemang
+FitDIT,AIフィットネスコーチ,https://huggingface.co/spaces/BoyuanJiang/fitdit,ML,ZENO,BoyuanJiang
+VITPose Transformers,高精度ポーズ推定,https://huggingface.co/spaces/hysts/vitpose,ML,ZENO,hysts
+AI Image Generator,AIで画像生成,https://huggingface.co/spaces/stability-ai/stable-diffusion,Image,CUDA,midjourney
+Language Translator,多言語翻訳AI,https://huggingface.co/spaces/facebook/m2m-100,Text,TPU,nlp_expert
+Music Composition AI,AI作曲支援,https://huggingface.co/spaces/facebook/musicgen,Audio,ZENO,soundwave
+Code Completion Tool,AIコード補完,https://huggingface.co/spaces/bigcode/starcoder,Text,CPU,codegen
