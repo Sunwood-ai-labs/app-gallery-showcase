@@ -66,67 +66,19 @@ const Home: NextPage = () => {
         <meta name="description" content="Discover amazing AI apps made by the community!" />
       </Head>
 
-      <header className="container mx-auto flex justify-between items-center py-4 px-4">
-        <div className="flex items-center gap-4">
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <span className="text-2xl">🤗</span> Spaces
-          </h1>
-          <nav className="flex items-center gap-4">
-            <Link href="/" className="text-gray-700 hover:text-[#FF9D00] transition-colors">
-              Home
-            </Link>
-            <Link href="/spaces" className="text-gray-700 hover:text-[#FF9D00] transition-colors">
-              Browse Spaces
-            </Link>
-          </nav>
-        </div>
-        <div className="flex items-center gap-4">
-          {session ? (
-            <>
-              <Link href="/profile" className="text-gray-700 hover:text-[#FF9D00] transition-colors mr-2">
-                {session.user?.username || session.user?.name || 'Profile'}
-              </Link>
-              <Link href="/create-space" className="create-button flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-                </svg>
-                Create new Space
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link href="/login" className="text-gray-700 hover:text-[#FF9D00] transition-colors mr-2">
-                Login
-              </Link>
-              <Link href="/signup" className="bg-[#FF9D00] text-white px-4 py-2 rounded-lg hover:bg-[#FF8A00] transition-colors mr-2">
-                Sign Up
-              </Link>
-            </>
-          )}
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <p className="text-gray-600 mt-1">Discover amazing AI apps made by the community!</p>
-          </div>
-          {/* Removed redundant My Profile button */}
-        </div>
-
+      <main className="container mx-auto px-4 py-8">
         {/* Search and Filters */}
         <div className="flex items-center gap-4 mb-8">
           <div className="relative flex-1">
             <input
               type="text"
-              placeholder="Search Spaces"
-              className="search-input"
+              placeholder="Search Spaces by name, author, or tags..."
+              className="w-full pl-12 pr-4 py-3 rounded-full border-2 border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm shadow-sm transition-all duration-300 ease-in-out hover:border-primary-500"
             />
             <svg
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-              width="20"
-              height="20"
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+              width="24"
+              height="24"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -138,20 +90,35 @@ const Home: NextPage = () => {
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
+            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">
+              <button className="text-gray-500 hover:text-primary-500 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 16v-4.414L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
           </div>
-          <Link href="/spaces" className="filter-button">
-            Browse all Spaces
-          </Link>
-          <button className="filter-button">
-            Full-text search
-          </button>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Sort:</span>
-            <select className="px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-              <option value="trending">Trending</option>
-              <option value="latest">Latest</option>
-              <option value="likes">Most Liked</option>
-            </select>
+          <div className="flex items-center space-x-2">
+            <Link 
+              href="/spaces" 
+              className="px-4 py-3 text-sm text-gray-700 bg-white border-2 border-gray-300 rounded-full hover:border-primary-500 hover:text-primary-500 transition-all duration-300 ease-in-out shadow-sm"
+            >
+              Browse all Spaces
+            </Link>
+            <div className="relative">
+              <select 
+                className="appearance-none w-full px-4 py-3 text-sm text-gray-700 bg-white border-2 border-gray-300 rounded-full hover:border-primary-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 ease-in-out shadow-sm pr-8"
+              >
+                <option value="trending">Trending</option>
+                <option value="latest">Latest</option>
+                <option value="likes">Most Liked</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                </svg>
+              </div>
+            </div>
           </div>
         </div>
 
