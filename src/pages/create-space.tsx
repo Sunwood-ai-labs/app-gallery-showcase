@@ -1,17 +1,48 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { toast } from 'sonner';
 
 const CreateSpace: React.FC = () => {
-  const [spaceName, setSpaceName] = useState('');
-  const [description, setDescription] = useState('');
-  const [visibility, setVisibility] = useState('public');
+  const router = useRouter();
+  const [title, setTitle] = useState('');
+  const [subtitle, setSubtitle] = useState('');
+  const [url, setUrl] = useState('');
   const [runtime, setRuntime] = useState('ZENO');
+  const [category, setCategory] = useState('Audio');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement space creation logic
-    console.log('Creating space:', { spaceName, description, visibility, runtime });
+
+    try {
+      const response = await fetch('/api/spaces/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          subtitle,
+          url,
+          runtime,
+          category,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'スペースの作成に失敗しました');
+      }
+
+      toast.success('スペースが作成されました');
+      router.push('/spaces');
+    } catch (error: any) {
+      toast.error('エラーが発生しました', {
+        description: error.message
+      });
+    }
   };
 
   return (
@@ -36,54 +67,72 @@ const CreateSpace: React.FC = () => {
       <main className="container mx-auto px-4 py-8">
         <form onSubmit={handleSubmit} className="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-8 space-y-6">
           <div>
-            <label htmlFor="spaceName" className="block text-sm font-medium text-gray-700 mb-2">
-              Space Name
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+              スペース名
             </label>
             <input
               type="text"
-              id="spaceName"
-              value={spaceName}
-              onChange={(e) => setSpaceName(e.target.value)}
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
-              placeholder="Enter a unique name for your Space"
+              placeholder="スペースの名前を入力してください"
             />
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-              Description
+            <label htmlFor="subtitle" className="block text-sm font-medium text-gray-700 mb-2">
+              サブタイトル
             </label>
-            <textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={4}
+            <input
+              type="text"
+              id="subtitle"
+              value={subtitle}
+              onChange={(e) => setSubtitle(e.target.value)}
+              required
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
-              placeholder="Describe what your Space does"
+              placeholder="スペースの簡単な説明を入力してください"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="url" className="block text-sm font-medium text-gray-700 mb-2">
+              URL
+            </label>
+            <input
+              type="url"
+              id="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
+              placeholder="https://example.com"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-6">
             <div>
-              <label htmlFor="visibility" className="block text-sm font-medium text-gray-700 mb-2">
-                Visibility
+              <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
+                カテゴリー
               </label>
               <select
-                id="visibility"
-                value={visibility}
-                onChange={(e) => setVisibility(e.target.value)}
+                id="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
               >
-                <option value="public">Public</option>
-                <option value="private">Private</option>
-                <option value="unlisted">Unlisted</option>
+                <option value="Audio">Audio</option>
+                <option value="Image">Image</option>
+                <option value="Text">Text</option>
+                <option value="Video">Video</option>
+                <option value="Other">Other</option>
               </select>
             </div>
 
             <div>
               <label htmlFor="runtime" className="block text-sm font-medium text-gray-700 mb-2">
-                Runtime
+                ランタイム
               </label>
               <select
                 id="runtime"
@@ -96,25 +145,6 @@ const CreateSpace: React.FC = () => {
                 <option value="CPU">CPU</option>
                 <option value="TPU">TPU</option>
               </select>
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="upload" className="block text-sm font-medium text-gray-700 mb-2">
-              Upload Files
-            </label>
-            <div className="flex items-center justify-center w-full">
-              <label className="flex flex-col w-full h-32 border-4 border-dashed hover:bg-gray-100 hover:border-gray-300">
-                <div className="flex flex-col items-center justify-center pt-7">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-gray-400 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                  </svg>
-                  <p className="pt-1 text-sm tracking-wider text-gray-400 group-hover:text-gray-600">
-                    Select a file or drag and drop
-                  </p>
-                </div>
-                <input type="file" className="opacity-0" multiple />
-              </label>
             </div>
           </div>
 
