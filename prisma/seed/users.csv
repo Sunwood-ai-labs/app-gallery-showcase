@@ -1,0 +1,9 @@
+username,email,password,name,bio,image
+hexgrad,hexgrad@example.com,$2a$10$zG3Z4L4L4L4L4L4L4L4L4uZ4L4L4L4L4L4L4L4L4L4L4L4L4L4,hexgrad,AIエンジニア,https://api.dicebear.com/7.x/adventurer/svg?seed=hexgrad
+wilkemang,wilkemang@example.com,$2a$10$zG3Z4L4L4L4L4L4L4L4L4uZ4L4L4L4L4L4L4L4L4L4L4L4L4L4,wilkemang,デザイナー,https://api.dicebear.com/7.x/adventurer/svg?seed=wilkemang
+BoyuanJiang,boyuanjiang@example.com,$2a$10$zG3Z4L4L4L4L4L4L4L4L4uZ4L4L4L4L4L4L4L4L4L4L4L4L4L4,BoyuanJiang,研究者,https://api.dicebear.com/7.x/adventurer/svg?seed=BoyuanJiang
+hysts,hysts@example.com,$2a$10$zG3Z4L4L4L4L4L4L4L4L4uZ4L4L4L4L4L4L4L4L4L4L4L4L4L4,hysts,開発者,https://api.dicebear.com/7.x/adventurer/svg?seed=hysts
+midjourney,midjourney@example.com,$2a$10$zG3Z4L4L4L4L4L4L4L4L4uZ4L4L4L4L4L4L4L4L4L4L4L4L4L4,midjourney,AIアーティスト,https://api.dicebear.com/7.x/adventurer/svg?seed=midjourney
+nlp_expert,nlp_expert@example.com,$2a$10$zG3Z4L4L4L4L4L4L4L4L4uZ4L4L4L4L4L4L4L4L4L4L4L4L4L4,nlp_expert,NLP研究者,https://api.dicebear.com/7.x/adventurer/svg?seed=nlp_expert
+soundwave,soundwave@example.com,$2a$10$zG3Z4L4L4L4L4L4L4L4L4uZ4L4L4L4L4L4L4L4L4L4L4L4L4L4,soundwave,音楽プロデューサー,https://api.dicebear.com/7.x/adventurer/svg?seed=soundwave
+codegen,codegen@example.com,$2a$10$zG3Z4L4L4L4L4L4L4L4L4uZ4L4L4L4L4L4L4L4L4L4L4L4L4L4,codegen,コード生成エキスパート,https://api.dicebear.com/7.x/adventurer/svg?seed=codegen

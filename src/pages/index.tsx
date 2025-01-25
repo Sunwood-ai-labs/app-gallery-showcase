@@ -2,88 +2,56 @@ import { NextPage } from 'next';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const SpaceCard = dynamic(() => import('../components/SpaceCard'), { 
+const SpaceCard = dynamic(() => import('../components/SpaceCard'), {
   ssr: true,
   loading: () => <div>Loading...</div>
 });
 
-const demoSpaces = [
-  {
-    title: 'Kokoro TTS',
-    subtitle: '日本語音声合成エンジン',
-    url: 'https://huggingface.co/spaces/hexgrad/kokoro-tts',
-    author: {
-      name: 'hexgrad',
-      username: 'hexgrad',
-      image: 'https://avatars.githubusercontent.com/u/example1'
-    },
-    likes: 1220,
-    daysAgo: 5,
-    runtime: 'ZENO',
-    category: 'Audio'
-  },
-  {
-    title: 'TransPixar',
-    subtitle: 'ピクサー風画像変換AI',
-    url: 'https://huggingface.co/spaces/wilkemang/transpixar',
-    author: {
-      name: 'wilkemang',
-      username: 'wilkemang',
-      image: 'https://avatars.githubusercontent.com/u/example2'
-    },
-    likes: 874,
-    daysAgo: 12,
-    runtime: 'ZENO',
-    category: 'Image'
-  },
-  {
-    title: 'FitDIT',
-    subtitle: 'AIフィットネスコーチ',
-    url: 'https://huggingface.co/spaces/BoyuanJiang/fitdit',
-    author: {
-      name: 'BoyuanJiang',
-      username: 'BoyuanJiang',
-      image: 'https://avatars.githubusercontent.com/u/example3'
-    },
-    likes: 125,
-    daysAgo: 3,
-    runtime: 'ZENO',
-    category: 'ML'
-  },
-  {
-    title: 'VITPose Transformers',
-    subtitle: '高精度ポーズ推定',
-    url: 'https://huggingface.co/spaces/hysts/vitpose',
-    author: {
-      name: 'hysts',
-      username: 'hysts',
-      image: 'https://avatars.githubusercontent.com/u/example4'
-    },
-    likes: 68,
-    daysAgo: 2,
-    runtime: 'ZENO',
-    category: 'ML'
-  }
-];
+interface Space {
+  id: string;
+  title: string;
+  subtitle: string;
+  url: string;
+  author: {
+    name: string;
+    username: string;
+    image: string;
+  };
+  likes: number;
+  daysAgo: number;
+  runtime: string;
+  category: string;
+}
 
 const Home: NextPage = () => {
-  const { data: session } = useSession();
+  const { session } = useSession(); // data プロパティを取り出す
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('trending');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [spaces, setSpaces] = useState<Space[]>([]);
+
+  useEffect(() => {
+    const fetchSpaces = async () => {
+      const response = await fetch('/api/spaces');
+      const data = await response.json();
+      setSpaces(data);
+    };
+
+    fetchSpaces();
+  }, []);
 
   // Filter and sort spaces
-  const filteredAndSortedSpaces = demoSpaces
-    .filter(space => {
-      const matchesSearch = 
+  const filteredAndSortedSpaces = spaces
+    .filter((space: Space) => {
+      const matchesSearch =
         space.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         space.author.username.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory === 'all' || space.category === selectedCategory;
       return matchesSearch && matchesCategory;
     })
-    .sort((a, b) => {
+    .sort((a: Space, b: Space) => {
       switch (sortBy) {
         case 'latest':
           return a.daysAgo - b.daysAgo;
@@ -91,7 +59,7 @@ const Home: NextPage = () => {
           return b.likes - a.likes;
         case 'trending':
           // Calculate trend score based on likes and recency
-          const getScore = (space: typeof demoSpaces[0]) => 
+          const getScore = (space: Space) =>
             (space.likes / (space.daysAgo + 1));
           return getScore(b) - getScore(a);
         default:
@@ -135,7 +103,7 @@ const Home: NextPage = () => {
           </div>
 
           <div className="relative flex-shrink-0">
-            <select 
+            <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
               className="appearance-none w-full px-4 py-3 text-sm text-gray-700 bg-white border-2 border-gray-300 rounded-full hover:border-primary-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 ease-in-out shadow-sm pr-10"
@@ -169,7 +137,7 @@ const Home: NextPage = () => {
           ))}
         </div>
 
-        {/* Spaces Grid */}
+        {/* Trending Spaces Grid */}
         <section>
           <div className="flex items-center gap-2 mb-6">
             <h2 className="text-xl font-semibold">
@@ -179,11 +147,25 @@ const Home: NextPage = () => {
             </h2>
             {sortBy === 'trending' && <span className="text-orange-500">🔥</span>}
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredAndSortedSpaces.map((space, index) => (
+            {filteredAndSortedSpaces.slice(0, 4).map((space: Space, index: number) => (
               <SpaceCard
-                key={index}
+                key={space.id}
+                {...space}
+                index={index}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* All Spaces Grid */}
+        <section>
+          <h2 className="text-xl font-semibold mb-6">All Spaces</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {filteredAndSortedSpaces.map((space: Space, index: number) => (
+              <SpaceCard
+                key={space.id}
                 {...space}
                 index={index}
               />
