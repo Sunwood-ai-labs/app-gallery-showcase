@@ -1,16 +1,5 @@
 import React from 'react';
 
-const getGradient = (index: number) => {
-  const gradients = [
-    'from-purple-600 to-pink-500',
-    'from-blue-500 to-teal-400',
-    'from-red-500 to-orange-400',
-    'from-green-500 to-teal-400',
-    'from-indigo-500 to-purple-500',
-    'from-yellow-400 to-orange-500'
-  ];
-  return gradients[index % gradients.length];
-};
 
 interface SpaceCardProps {
   title: string;
@@ -25,7 +14,7 @@ interface SpaceCardProps {
   likes: number;
   daysAgo: number;
   runtime: string;
-  index: number;
+  gradient?: string;
 }
 
 const SpaceCard: React.FC<SpaceCardProps> = ({
@@ -37,14 +26,34 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
   likes,
   daysAgo,
   runtime,
-  index
+  gradient
 }) => {
+  const getGradientStyle = (gradientValue?: string) => {
+    if (!gradientValue) {
+      return {
+        background: 'linear-gradient(to right, #6366f1, #ec4899)'
+      };
+    }
+
+    if (gradientValue.includes('from-[')) {
+      const startColor = gradientValue.match(/from-\[(.*?)\]/)?.[1];
+      const endColor = gradientValue.match(/to-\[(.*?)\]/)?.[1];
+      return {
+        background: `linear-gradient(to right, ${startColor}, ${endColor})`
+      };
+    }
+
+    return {
+      background: `linear-gradient(to right, var(--${gradientValue.split(' ')[0].replace('from-', '')}), var(--${gradientValue.split(' ')[1].replace('to-', '')}))`
+    };
+  };
+
   return (
     <div className="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 cursor-pointer">
       {/* Card background with gradient */}
       <div
-        className={`relative aspect-[16/9] bg-gradient-to-br ${getGradient(index)} flex flex-col items-center justify-center p-6 transition-all duration-300 ease-in-out group-hover:brightness-110 group-hover:contrast-125`}
-      >
+        className="relative aspect-[16/9] flex flex-col items-center justify-center p-6 transition-all duration-300 ease-in-out group-hover:brightness-110 group-hover:contrast-125"
+        style={getGradientStyle(gradient)}>
         {/* Gradient overlay for better text readability */}
         <div className="absolute inset-0 opacity-20 transition-opacity duration-300 bg-gradient-to-br from-black/20 to-black/30" />
         
