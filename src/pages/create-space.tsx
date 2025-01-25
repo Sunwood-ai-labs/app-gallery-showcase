@@ -11,7 +11,48 @@ const CreateSpace: React.FC = () => {
   const [url, setUrl] = useState('');
   const [runtime, setRuntime] = useState('ZENO');
   const [category, setCategory] = useState('Audio');
-  const [gradient, setGradient] = useState('from-purple-600 to-pink-500'); // デフォルトグラデーション
+  const [gradient, setGradient] = useState('custom'); // カスタムグラデーションをデフォルトに
+  const [startColor, setStartColor] = useState('#6366f1'); // インディゴをデフォルトに
+  const [endColor, setEndColor] = useState('#ec4899'); // ピンクをデフォルトに
+  
+  // プリセットグラデーション
+  const gradientPresets = [
+    { name: 'カスタム', value: 'custom' },
+    { name: 'パープルサンセット', value: 'from-purple-600 to-pink-500' },
+    { name: 'オーシャンブリーズ', value: 'from-blue-500 to-teal-400' },
+    { name: 'フレイムフレア', value: 'from-red-500 to-orange-400' },
+    { name: 'フォレストミスト', value: 'from-green-500 to-teal-400' },
+    { name: 'ミッドナイトドリーム', value: 'from-indigo-500 to-purple-500' },
+    { name: 'サニーデライト', value: 'from-yellow-400 to-orange-500' },
+    { name: 'ノーザンライト', value: 'from-green-400 to-blue-500' },
+    { name: 'ベリーブラスト', value: 'from-pink-500 to-rose-500' },
+    { name: 'サイバーパンク', value: 'from-violet-600 to-yellow-400' },
+    { name: 'トロピカルパラダイス', value: 'from-emerald-400 to-cyan-400' },
+  ];
+
+  // グラデーションの値を取得
+  const getGradientValue = () => {
+    if (gradient === 'custom') {
+      // カスタムグラデーションの場合、選択された色を使用
+      return `from-[${startColor}] to-[${endColor}]`;
+    }
+    // プリセットの場合、そのまま返す
+    return gradient;
+  };
+
+  // グラデーションのプレビュースタイル
+  const getPreviewStyle = () => {
+    if (gradient === 'custom') {
+      return {
+        background: `linear-gradient(to right, ${startColor}, ${endColor})`
+      };
+    }
+    // Tailwindのグラデーションクラスをインラインスタイルに変換
+    const [fromColor, toColor] = gradient.split(' ');
+    return {
+      background: `linear-gradient(to right, var(--${fromColor.replace('from-', '')}), var(--${toColor.replace('to-', '')}))`
+    };
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +69,7 @@ const CreateSpace: React.FC = () => {
           url,
           runtime,
           category,
-          gradient,
+          gradient: getGradientValue(),
         }),
       });
 
@@ -39,7 +80,7 @@ const CreateSpace: React.FC = () => {
       }
 
       toast.success('スペースが作成されました');
-      router.push('/spaces');
+      router.push('/');
     } catch (error: any) {
       toast.error('エラーが発生しました', {
         description: error.message
@@ -151,22 +192,52 @@ const CreateSpace: React.FC = () => {
           </div>
 
           <div>
-            <label htmlFor="gradient" className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               グラデーション
             </label>
-            <select
-              id="gradient"
-              value={gradient}
-              onChange={(e) => setGradient(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
-            >
-              <option value="from-purple-600 to-pink-500">パープル/ピンク</option>
-              <option value="from-blue-500 to-teal-400">ブルー/ティール</option>
-              <option value="from-red-500 to-orange-400">レッド/オレンジ</option>
-              <option value="from-green-500 to-teal-400">グリーン/ティール</option>
-              <option value="from-indigo-500 to-purple-500">インディゴ/パープル</option>
-              <option value="from-yellow-400 to-orange-500">イエロー/オレンジ</option>
-            </select>
+            <div className="space-y-4">
+              <select
+                value={gradient}
+                onChange={(e) => setGradient(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
+              >
+                {gradientPresets.map((preset) => (
+                  <option key={preset.value} value={preset.value}>
+                    {preset.name}
+                  </option>
+                ))}
+              </select>
+
+              {gradient === 'custom' && (
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      開始色
+                    </label>
+                    <input
+                      type="color"
+                      value={startColor}
+                      onChange={(e) => setStartColor(e.target.value)}
+                      className="w-full h-10 p-1 rounded cursor-pointer"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      終了色
+                    </label>
+                    <input
+                      type="color"
+                      value={endColor}
+                      onChange={(e) => setEndColor(e.target.value)}
+                      className="w-full h-10 p-1 rounded cursor-pointer"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* グラデーションプレビュー */}
+              <div className="w-full h-16 rounded-lg shadow-inner" style={getPreviewStyle()} />
+            </div>
           </div>
 
           <div>
