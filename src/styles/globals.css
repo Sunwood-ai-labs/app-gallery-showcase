@@ -29,47 +29,52 @@ body {
 
 @layer components {
   .card-base {
-    @apply relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300;
+    @apply relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:scale-[1.02] group;
   }
 
-  .card-base {
-    @apply relative overflow-hidden rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-2xl cursor-pointer;
+  .card-gradient {
+    @apply relative overflow-hidden;
+    aspect-ratio: 16/9;
   }
 
-  .card-base .card-gradient {
-    @apply relative flex items-center justify-center p-6 transition-all duration-300 ease-in-out;
+  .card-gradient::before {
+    @apply absolute inset-0 opacity-20 transition-opacity duration-300;
+    content: '';
+    background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.3));
   }
 
-  .card-base:hover .card-gradient {
-    @apply brightness-110 contrast-125;
+  .card-title {
+    @apply relative z-10 text-2xl font-bold text-white text-center break-words line-clamp-2;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 
-  .card-base .card-overlay {
-    @apply absolute inset-0 flex flex-col justify-between p-4 opacity-0 transition-opacity duration-300 ease-in-out;
+  .card-overlay {
+    @apply absolute inset-0 flex flex-col justify-between p-4;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.2) 30%,
+      rgba(0, 0, 0, 0.4) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
 
   .card-base:hover .card-overlay {
-    @apply opacity-100 bg-black/20;
-  }
-
-  .card-base .card-title {
-    @apply text-2xl font-bold text-white text-center break-words line-clamp-3 drop-shadow-lg transition-transform duration-300 ease-in-out;
-  }
-
-  .card-base:hover .card-title {
-    @apply -translate-y-1 scale-105;
+    opacity: 1;
   }
 
   .card-status {
-    @apply text-xs bg-green-500/80 backdrop-blur px-2 py-1 rounded-full text-white;
+    @apply inline-flex items-center gap-1 text-xs font-medium text-white bg-green-500/90 backdrop-blur-sm px-2.5 py-1 rounded-full shadow-sm;
   }
 
   .card-likes {
-    @apply flex items-center space-x-1 text-white;
+    @apply flex items-center gap-1.5 text-white text-sm font-medium backdrop-blur-sm px-2.5 py-1 rounded-full;
+    background: rgba(0, 0, 0, 0.3);
   }
 
   .card-footer {
-    @apply mt-auto flex justify-between items-center text-sm text-white/80;
+    @apply flex justify-between items-center text-sm text-white/90 font-medium;
   }
 
   .search-input {
