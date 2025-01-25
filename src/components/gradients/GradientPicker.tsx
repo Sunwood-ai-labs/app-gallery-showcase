@@ -30,7 +30,7 @@ export const getGradientValue = (gradient: string, startColor: string, endColor:
   return gradient;
 };
 
-const getTailwindGradientColors = (gradient: string) => {
+export const getTailwindGradientColors = (gradient: string) => {
   const fromClass = gradient.split(' ')[0];
   const toClass = gradient.split(' ')[1];
   
@@ -57,10 +57,25 @@ const getTailwindGradientColors = (gradient: string) => {
     'to-cyan-400': '#22d3ee'
   };
 
-  return {
-    fromColor: colorMap[fromClass] || '#000000',
-    toColor: colorMap[toClass] || '#000000'
-  };
+  
+  let startColor = colorMap[fromClass] || '#000000';
+  let endColor = colorMap[toClass] || '#000000';
+  
+  // CSS変数が使用されている場合、それらを実際の色に変換
+  if (startColor.startsWith('var(--')) {
+    const cssVarName = startColor.match(/var\(--(.*?)\)/)?.[1];
+    if (cssVarName) {
+      startColor = colorMap[`from-${cssVarName}`] || startColor;
+    }
+  }
+  if (endColor.startsWith('var(--')) {
+    const cssVarName = endColor.match(/var\(--(.*?)\)/)?.[1];
+    if (cssVarName) {
+      endColor = colorMap[`to-${cssVarName}`] || endColor;
+    }
+  }
+  
+  return { fromColor: startColor, toColor: endColor };
 };
 
 export const getPreviewStyle = (gradient: string, startColor: string, endColor: string) => {
