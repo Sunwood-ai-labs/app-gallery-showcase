@@ -24,6 +24,12 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+  padding-top: 64px; /* ナビゲーションバーの高さ分のパディング */
+}
+
+/* ナビゲーションバーのスタイル */
+.nav-fixed {
+  @apply fixed top-0 left-0 w-full bg-white shadow-lg z-50;
 }
 
 /* カスタムクラス */
