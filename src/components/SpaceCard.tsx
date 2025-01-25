@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { getTailwindGradientColors } from '@/components/gradients/GradientPicker';
 
 interface SpaceCardProps {
   title: string;
@@ -35,16 +35,21 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
       };
     }
 
+    // カスタムグラデーションの場合
     if (gradientValue.includes('from-[')) {
-      const startColor = gradientValue.match(/from-\[(.*?)\]/)?.[1];
-      const endColor = gradientValue.match(/to-\[(.*?)\]/)?.[1];
-      return {
-        background: `linear-gradient(to right, ${startColor}, ${endColor})`
-      };
+      const startColor = gradientValue.match(/from-\[(#[0-9a-fA-F]{6})\]/)?.[1];
+      const endColor = gradientValue.match(/to-\[(#[0-9a-fA-F]{6})\]/)?.[1];
+      if (startColor && endColor) {
+        return {
+          background: `linear-gradient(to right, ${startColor}, ${endColor})`
+        };
+      }
     }
 
+    // プリセットグラデーションの場合
+    const { fromColor, toColor } = getTailwindGradientColors(gradientValue);
     return {
-      background: `linear-gradient(to right, var(--${gradientValue.split(' ')[0].replace('from-', '')}), var(--${gradientValue.split(' ')[1].replace('to-', '')}))`
+      background: `linear-gradient(to right, ${fromColor}, ${toColor})`
     };
   };
 
