@@ -71,7 +71,9 @@ model Space {
   runtime     String
   category    String
   visibility  String   @default("public")
-  gradient    String?
+  gradient    String?  // プリセットまたはカスタムグラデーション
+  startColor  String?  // カスタムグラデーションの開始色
+  endColor    String?  // カスタムグラデーションの終了色
   likes       Like[]
   createdAt   DateTime @default(now())
 }
