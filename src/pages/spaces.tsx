@@ -11,6 +11,9 @@ interface Author {
 
 interface Space {
   title: string;
+  subtitle: string;
+  url: string;
+  category: string;
   author: Author;
   likes: number;
   daysAgo: number;
@@ -20,6 +23,9 @@ interface Space {
 const allSpaces: Space[] = [
   {
     title: 'Kokoro TTS',
+    subtitle: '日本語音声合成エンジン',
+    url: 'https://huggingface.co/spaces/hexgrad/kokoro-tts',
+    category: 'Audio',
     author: {
       name: 'hexgrad',
       username: 'hexgrad',
@@ -31,6 +37,9 @@ const allSpaces: Space[] = [
   },
   {
     title: 'TransPixar',
+    subtitle: 'ピクサー風画像変換AI',
+    url: 'https://huggingface.co/spaces/wilkemang/transpixar',
+    category: 'Image',
     author: {
       name: 'wilkemang',
       username: 'wilkemang',
@@ -42,6 +51,9 @@ const allSpaces: Space[] = [
   },
   {
     title: 'FitDIT',
+    subtitle: 'AIフィットネスコーチ',
+    url: 'https://huggingface.co/spaces/BoyuanJiang/fitdit',
+    category: 'ML',
     author: {
       name: 'BoyuanJiang',
       username: 'BoyuanJiang',
@@ -53,6 +65,9 @@ const allSpaces: Space[] = [
   },
   {
     title: 'VITPose Transformers',
+    subtitle: '高精度ポーズ推定',
+    url: 'https://huggingface.co/spaces/hysts/vitpose',
+    category: 'ML',
     author: {
       name: 'hysts',
       username: 'hysts',
@@ -64,6 +79,9 @@ const allSpaces: Space[] = [
   },
   {
     title: 'AI Image Generator',
+    subtitle: 'AIで画像生成',
+    url: 'https://huggingface.co/spaces/stability-ai/stable-diffusion',
+    category: 'Image',
     author: {
       name: 'midjourney',
       username: 'midjourney',
@@ -75,6 +93,9 @@ const allSpaces: Space[] = [
   },
   {
     title: 'Language Translator',
+    subtitle: '多言語翻訳AI',
+    url: 'https://huggingface.co/spaces/facebook/m2m-100',
+    category: 'Text',
     author: {
       name: 'nlp_expert',
       username: 'nlp_expert',
@@ -86,6 +107,9 @@ const allSpaces: Space[] = [
   },
   {
     title: 'Music Composition AI',
+    subtitle: 'AI作曲支援',
+    url: 'https://huggingface.co/spaces/facebook/musicgen',
+    category: 'Audio',
     author: {
       name: 'soundwave',
       username: 'soundwave',
@@ -97,6 +121,9 @@ const allSpaces: Space[] = [
   },
   {
     title: 'Code Completion Tool',
+    subtitle: 'AIコード補完',
+    url: 'https://huggingface.co/spaces/bigcode/starcoder',
+    category: 'Text',
     author: {
       name: 'codegen',
       username: 'codegen',
@@ -192,7 +219,7 @@ const Spaces: React.FC = () => {
           {filteredSpaces.map((space, index) => (
             <SpaceCard
               key={index}
-              {...space}
+              {...space} 
               index={index}
             />
           ))}
