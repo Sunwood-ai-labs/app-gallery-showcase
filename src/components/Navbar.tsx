@@ -69,9 +69,10 @@ export default function Navbar() {
                 {session?.user?.image && (
                   <Image
                     src={session?.user?.image}
-                    alt="Profile" 
-                    width={32} 
-                    height={32} 
+                    alt="Profile"
+                    width={32}
+                    height={32}
+                    priority
                     className="rounded-full transition-transform duration-300 hover:scale-110 hover:shadow-lg"
                   />
                 )}
@@ -141,9 +142,10 @@ export default function Navbar() {
                   {session?.user?.image && (
                     <Image
                       src={session?.user?.image}
-                      alt="Profile" 
-                      width={32} 
-                      height={32} 
+                      alt="Profile"
+                      width={32}
+                      height={32}
+                      priority
                       className="rounded-full transition-transform duration-300 hover:scale-110 hover:shadow-lg"
                     />
                   )}
