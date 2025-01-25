@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ message: 'ログインが必要です' });
     }
 
-    const { title, subtitle, url, runtime, category } = req.body;
+    const { title, subtitle, url, runtime, category, gradient } = req.body;
 
     // Validation
     if (!title || !subtitle || !url || !runtime || !category) {
@@ -43,14 +43,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         url,
         runtime,
         category,
+        gradient,
         authorId: session.user.id,
-        visibility: 'public' // デフォルト値
-      },
+        visibility: 'public'
+      }
     });
 
     return res.status(201).json({ 
       message: 'スペースが作成されました', 
-      space 
+      space
     });
 
   } catch (err: any) {

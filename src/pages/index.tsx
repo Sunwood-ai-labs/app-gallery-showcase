@@ -26,7 +26,7 @@ interface Space {
 }
 
 const Home: NextPage = () => {
-  const { session } = useSession(); // data プロパティを取り出す
+  const { data: session } = useSession(); // dataをsessionとしてリネーム
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('trending');
   const [selectedCategory, setSelectedCategory] = useState('all');

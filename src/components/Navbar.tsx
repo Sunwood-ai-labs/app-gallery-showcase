@@ -45,15 +45,6 @@ export default function Navbar() {
           >
             Home
           </Link>
-          <Link 
-            href="/spaces" 
-            className={cn(
-              buttonVariants({ variant: "ghost", size: "sm" }),
-              "transition-all duration-300 hover:text-primary-500 hover:bg-primary-50 transform hover:scale-105"
-            )}
-          >
-            Spaces
-          </Link>
           {status === 'authenticated' && session?.user ? (
             <>
               <Link 
@@ -123,12 +114,6 @@ export default function Navbar() {
               className="block py-2 text-gray-700 hover:bg-primary-50 rounded transition-colors duration-300 hover:text-primary-500"
             >
               Home
-            </Link>
-            <Link 
-              href="/spaces" 
-              className="block py-2 text-gray-700 hover:bg-primary-50 rounded transition-colors duration-300 hover:text-primary-500"
-            >
-              Spaces
             </Link>
             {status === 'authenticated' && session?.user ? (
               <>
