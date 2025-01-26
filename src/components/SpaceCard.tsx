@@ -1,53 +1,156 @@
-import React from 'react';
-
-const getGradient = (index: number) => {
-  const gradients = [
-    'from-purple-600 to-pink-500',
-    'from-blue-500 to-teal-400',
-    'from-red-500 to-orange-400',
-    'from-green-500 to-teal-400',
-    'from-indigo-500 to-purple-500',
-    'from-yellow-400 to-orange-500'
-  ];
-  return gradients[index % gradients.length];
-};
+import React, { useState } from 'react';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { getTailwindGradientColors } from '@/components/gradients/GradientPicker';
+import { toast } from 'sonner';
 
 interface SpaceCardProps {
+  id: string;
   title: string;
   subtitle: string;
   url: string;
   category: string;
   author: {
+    id: string;
     name: string;
     image: string;
     username: string;
   };
-  likes: number;
+  clicks: number;
   daysAgo: number;
   runtime: string;
-  index: number;
+  createdAt: Date;
+  gradient?: string;
+  onLike?: (id: string, newLikeCount: number) => void;
+  onDelete?: (id: string) => void;
 }
 
 const SpaceCard: React.FC<SpaceCardProps> = ({
+  id,
   title,
   subtitle,
   url,
   category,
   author,
-  likes,
+  clicks,
   daysAgo,
   runtime,
-  index
+  createdAt,
+  gradient,
+  onLike,
+  onDelete
 }) => {
+  const [clickCount, setClickCount] = useState(clicks);
+  const { data: session } = useSession();
+
+  const handleCardClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+
+    try {
+      // クリック数を更新
+      const response = await fetch('/api/spaces/click', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ spaceId: id }),
+      });
+
+      if (response.ok) {
+        const newCount = clickCount + 1;
+        setClickCount(newCount);
+        // 親コンポーネントに通知
+        onLike?.(id, newCount); // このコールバック名も後で更新します
+      }
+    } catch (error) {
+      console.error('Error updating like count:', error);
+    }
+
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const getTimeAgo = () => {
+    const now = new Date();
+    const date = new Date(createdAt);
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+
+    if (diffInMinutes < 60) {
+      return `${diffInMinutes}分前`;
+    }
+
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) {
+      return `${diffInHours}時間前`;
+    }
+
+    // 7日以内の場合は日数を表示
+    if (daysAgo < 7) {
+      return `${daysAgo}日前`;
+    }
+
+    return date.toLocaleDateString('ja-JP');
+  };
+
+  const getGradientStyle = (gradientValue?: string) => {
+    if (!gradientValue) {
+      return {
+        background: 'linear-gradient(to right, #6366f1, #ec4899)'
+      };
+    }
+
+    // カスタムグラデーションの場合
+    if (gradientValue.includes('from-[')) {
+      const startColor = gradientValue.match(/from-\[(#[0-9a-fA-F]{6})\]/)?.[1];
+      const endColor = gradientValue.match(/to-\[(#[0-9a-fA-F]{6})\]/)?.[1];
+      if (startColor && endColor) {
+        return {
+          background: `linear-gradient(to right, ${startColor}, ${endColor})`
+        };
+      }
+    }
+
+    // プリセットグラデーションの場合
+    const { fromColor, toColor } = getTailwindGradientColors(gradientValue);
+    return {
+      background: `linear-gradient(to right, ${fromColor}, ${toColor})`
+    };
+  };
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!window.confirm('このスペースを削除してもよろしいですか？')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/spaces/delete?spaceId=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        toast.success('スペースを削除しました');
+        onDelete?.(id);
+      }
+    } catch (error) {
+      toast.error('スペースの削除に失敗しました');
+    }
+  };
+
   return (
-    <div className="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 cursor-pointer">
-      {/* Card background with gradient */}
+    <a
+      href="#"
+      onClick={handleCardClick}
+      className="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 cursor-pointer block"
+    >
       <div
-        className={`relative aspect-[16/9] bg-gradient-to-br ${getGradient(index)} flex flex-col items-center justify-center p-6 transition-all duration-300 ease-in-out group-hover:brightness-110 group-hover:contrast-125`}
-      >
+        className="relative aspect-[16/9] flex flex-col items-center justify-center p-6 transition-all duration-300 ease-in-out group-hover:brightness-110 group-hover:contrast-125"
+        style={getGradientStyle(gradient)}>
         {/* Gradient overlay for better text readability */}
         <div className="absolute inset-0 opacity-20 transition-opacity duration-300 bg-gradient-to-br from-black/20 to-black/30" />
-        
+
         {/* Title and Subtitle with animation */}
         <div className="relative z-10 space-y-2 text-center">
           <h3 className="text-2xl font-bold text-white break-words line-clamp-2 drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-105">
@@ -62,6 +165,23 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
       {/* Hover overlay with animation */}
       <div className="absolute inset-0 flex flex-col justify-between p-4 bg-gradient-to-b from-black/0 via-black/20 to-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out">
         <div className="flex justify-between items-start">
+          {/* Edit and Delete Buttons */}
+          {session?.user?.id === author?.id && (
+            <div className="flex space-x-2">
+              <Link 
+                href={`/edit-space/${id}`}
+                onClick={(e) => e.stopPropagation()}
+                className="p-2 bg-white/80 rounded-full text-gray-700 hover:bg-gray-200 transition-colors"
+              >
+                編集
+              </Link>
+              <button 
+                onClick={handleDelete}
+                className="p-2 bg-red-500/80 rounded-full text-white hover:bg-red-600 transition-colors">
+                削除
+              </button>
+            </div>
+          )}
           <div className="flex gap-2">
             <span className="inline-flex items-center gap-1 text-xs bg-green-500/80 backdrop-blur px-2 py-1 rounded-full text-white shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 ease-out">
               {runtime}
@@ -70,22 +190,22 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
               {category}
             </span>
           </div>
-          <button className="flex items-center space-x-1 text-white bg-black/40 backdrop-blur-sm px-2 py-1 rounded-full transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 ease-out hover:bg-black/60">
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9.653 16.915l-.005-.003-.019-.01a20.759 20.759 0 01-1.162-.682 22.045 22.045 0 01-2.582-1.9C4.045 12.733 2 10.352 2 7.5a4.5 4.5 0 018-2.828A4.5 4.5 0 0118 7.5c0 2.852-2.044 5.233-3.885 6.82a22.049 22.049 0 01-3.744 2.582l-.019.01-.005.003h-.002a.739.739 0 01-.69.001l-.002-.001z" />
+          <div className="flex items-center space-x-1 text-white bg-red-500/80 backdrop-blur-sm px-2 py-1 rounded-full transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 ease-out">
+            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
             </svg>
-            <span>{likes}</span>
-          </button>
+            <span>{clickCount || 0}</span>
+          </div>
         </div>
 
         <div className="flex justify-between items-center text-sm text-white/90 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 ease-out delay-100">
           <span className="font-medium hover:text-white transition-colors duration-200">
             @{author.username || author.name}
           </span>
-          <span className="text-white/80">{daysAgo} 日前</span>
+          <span className="text-white/80">{getTimeAgo()}</span>
         </div>
       </div>
-    </div>
+    </a>
   );
 };
 

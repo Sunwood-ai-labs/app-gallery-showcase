@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../../lib/auth';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
+  if (req.method !== 'PUT') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
@@ -15,7 +15,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ message: 'ログインが必要です' });
     }
 
-    const { title, subtitle, url, runtime, category, gradient } = req.body;
+    const { id, title, subtitle, url, runtime, category, gradient } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: 'Space ID is required' });
+    }
+
+    // スペースの存在確認と所有者チェック
+    const existingSpace = await prisma.space.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        authorId: true,
+      },
+    });
+
+    if (!existingSpace) {
+      return res.status(404).json({ message: 'Space not found' });
+    }
+
+    if (existingSpace.authorId !== session.user.id) {
+      return res.status(403).json({ message: '編集権限がありません' });
+    }
 
     // Validation
     if (!title || !subtitle || !url || !runtime || !category) {
@@ -39,13 +60,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       startColor?: string;
       endColor?: string;
     } = {
-      gradient: req.body.gradient
+      gradient: gradient
     };
 
-    if (req.body.gradient?.startsWith('from-[')) {
-      // カスタムグラデーションの場合
-      const startMatch = req.body.gradient.match(/from-\[(.*?)\]/);
-      const endMatch = req.body.gradient.match(/to-\[(.*?)\]/);
+    if (gradient?.startsWith('from-[')) {
+      const startMatch = gradient.match(/from-\[(.*?)\]/);
+      const endMatch = gradient.match(/to-\[(.*?)\]/);
       
       if (startMatch && endMatch) {
         gradientData.startColor = startMatch[1];
@@ -53,32 +73,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
-    // Create space with updated data
-    const spaceData = {
-      title,
-      subtitle,
-      url,
-      runtime,
-      category,
-      authorId: session.user.id,
-      visibility: 'public'
-    };
-
-    const space = await prisma.space.create({
+    // Update space with new data
+    const updatedSpace = await prisma.space.update({
+      where: { id },
       data: {
-        ...spaceData,
+        title,
+        subtitle,
+        url,
+        runtime,
+        category,
         ...gradientData
       }
     });
 
-    return res.status(201).json({ 
-      message: 'スペースが作成されました', 
-      space
+    return res.status(200).json({ 
+      message: 'スペースが更新されました', 
+      space: updatedSpace
     });
   } catch (err: any) {
-    console.error('Space作成エラー:', err);
+    console.error('Space更新エラー:', err);
     return res.status(500).json({ 
-      message: 'スペースの作成中にエラーが発生しました',
+      message: 'スペースの更新中にエラーが発生しました',
       error: err.message
     });
   }

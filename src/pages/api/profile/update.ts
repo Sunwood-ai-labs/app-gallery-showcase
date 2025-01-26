@@ -1,9 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../../lib/auth';
-
-const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -94,8 +92,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       message: 'プロフィールの更新中に予期せぬエラーが発生しました',
       error: err.message || 'Internal server error'
     });
-  } finally {
-    await prisma.$disconnect();
   }
 }
 

@@ -1,50 +1,53 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
-import dynamic from 'next/dynamic';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
-
-const SpaceCard = dynamic(() => import('../components/SpaceCard'), {
-  ssr: true,
-  loading: () => <div>Loading...</div>
-});
-
-interface Space {
-  id: string;
-  title: string;
-  subtitle: string;
-  url: string;
-  author: {
-    name: string;
-    username: string;
-    image: string;
-  };
-  likes: number;
-  daysAgo: number;
-  runtime: string;
-  category: string;
-}
+import { Space } from '@/types/space';
+import { SpaceGrid } from '@/components/spaces/SpaceGrid';
 
 const Home: NextPage = () => {
-  const { data: session } = useSession(); // dataをsessionとしてリネーム
+  const { data: session } = useSession();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('trending');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [spaces, setSpaces] = useState<Space[]>([]);
+  const [trendingSpaces, setTrendingSpaces] = useState<Space[]>([]);
+
+  const removeSpace = (id: string) => {
+    setSpaces(prevSpaces => prevSpaces.filter(space => space.id !== id));
+    setTrendingSpaces(prevSpaces => prevSpaces.filter(space => space.id !== id));
+  };
+
+  const handleSpaceUpdate = (id: string, updates: Partial<Space>) => {
+    const updateSpaceList = (prevSpaces: Space[]) =>
+      prevSpaces.map(space => 
+        space.id === id ? { ...space, ...updates } : space
+      );
+    
+    setSpaces(updateSpaceList);
+    setTrendingSpaces(updateSpaceList);
+  };
 
   useEffect(() => {
     const fetchSpaces = async () => {
       const response = await fetch('/api/spaces');
       const data = await response.json();
+      
+      // トレンディングスペースを計算
+      const trending = [...data].sort((a, b) => {
+        const getScore = (space: Space) => space.clicks; // clicksは既に1週間以内のみ
+        return getScore(b) - getScore(a);
+      }).slice(0, 4);
+
+      setTrendingSpaces(trending);
       setSpaces(data);
     };
 
     fetchSpaces();
   }, []);
 
-  // Filter and sort spaces
-  const filteredAndSortedSpaces = spaces
-    .filter((space: Space) => {
+  const getFilteredAndSortedSpaces = () => {
+    return spaces.filter((space: Space) => {
       const matchesSearch =
         space.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         space.author.username.toLowerCase().includes(searchTerm.toLowerCase());
@@ -54,18 +57,16 @@ const Home: NextPage = () => {
     .sort((a: Space, b: Space) => {
       switch (sortBy) {
         case 'latest':
-          return a.daysAgo - b.daysAgo;
+          return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
         case 'likes':
-          return b.likes - a.likes;
-        case 'trending':
-          // Calculate trend score based on likes and recency
-          const getScore = (space: Space) =>
-            (space.likes / (space.daysAgo + 1));
-          return getScore(b) - getScore(a);
-        default:
-          return 0;
+          return b.clicks - a.clicks;
+        default: // 'trending'の場合もここで処理
+          return b.clicks - a.clicks;
       }
     });
+  };
+
+  const filteredAndSortedSpaces = getFilteredAndSortedSpaces();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -137,46 +138,33 @@ const Home: NextPage = () => {
           ))}
         </div>
 
-        {/* Trending Spaces Grid */}
-        <section>
+        {/* トレンディングスペース（固定表示） */}
+        <section className="mb-12">
           <div className="flex items-center gap-2 mb-6">
-            <h2 className="text-xl font-semibold">
-              {sortBy === 'trending' && '⭐ Trending Spaces'}
-              {sortBy === 'latest' && '🆕 Latest Spaces'}
-              {sortBy === 'likes' && '❤️ Most Liked Spaces'}
-            </h2>
-            {sortBy === 'trending' && <span className="text-orange-500">🔥</span>}
+            <h2 className="text-xl font-semibold">👀 Trending Spaces</h2>
+            <span className="text-orange-500">🔥</span>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredAndSortedSpaces.slice(0, 4).map((space: Space, index: number) => (
-              <SpaceCard
-                key={space.id}
-                {...space}
-                index={index}
-              />
-            ))}
-          </div>
+          <SpaceGrid
+            spaces={trendingSpaces}
+            title=""
+            onSpaceUpdate={handleSpaceUpdate}
+            onSpaceDelete={removeSpace}
+          />
         </section>
 
-        {/* All Spaces Grid */}
+        {/* フィルタリング・ソートされたスペース */}
         <section>
-          <h2 className="text-xl font-semibold mb-6">All Spaces</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredAndSortedSpaces.map((space: Space, index: number) => (
-              <SpaceCard
-                key={space.id}
-                {...space}
-                index={index}
-              />
-            ))}
-          </div>
-
-          {filteredAndSortedSpaces.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-gray-500">No spaces found matching your search.</p>
-            </div>
-          )}
+          <h2 className="text-xl font-semibold mb-6">
+            {sortBy === 'latest' ? '🆕 Latest Spaces' : 
+             sortBy === 'likes' ? '👀 Most Viewed Spaces' : 
+             '📚 All Spaces'}
+          </h2>
+          <SpaceGrid
+            spaces={filteredAndSortedSpaces}
+            title=""
+            onSpaceUpdate={handleSpaceUpdate}
+            onSpaceDelete={removeSpace}
+          />
         </section>
       </main>
     </div>

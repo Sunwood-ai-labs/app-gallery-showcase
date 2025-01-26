@@ -3,6 +3,8 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { toast } from 'sonner';
+import { SpaceFormFields } from '@/components/forms/SpaceForm';
+import { GradientPicker, getGradientValue } from '@/components/gradients/GradientPicker';
 
 const CreateSpace: React.FC = () => {
   const router = useRouter();
@@ -11,48 +13,9 @@ const CreateSpace: React.FC = () => {
   const [url, setUrl] = useState('');
   const [runtime, setRuntime] = useState('ZENO');
   const [category, setCategory] = useState('Audio');
-  const [gradient, setGradient] = useState('custom'); // カスタムグラデーションをデフォルトに
-  const [startColor, setStartColor] = useState('#6366f1'); // インディゴをデフォルトに
-  const [endColor, setEndColor] = useState('#ec4899'); // ピンクをデフォルトに
-  
-  // プリセットグラデーション
-  const gradientPresets = [
-    { name: 'カスタム', value: 'custom' },
-    { name: 'パープルサンセット', value: 'from-purple-600 to-pink-500' },
-    { name: 'オーシャンブリーズ', value: 'from-blue-500 to-teal-400' },
-    { name: 'フレイムフレア', value: 'from-red-500 to-orange-400' },
-    { name: 'フォレストミスト', value: 'from-green-500 to-teal-400' },
-    { name: 'ミッドナイトドリーム', value: 'from-indigo-500 to-purple-500' },
-    { name: 'サニーデライト', value: 'from-yellow-400 to-orange-500' },
-    { name: 'ノーザンライト', value: 'from-green-400 to-blue-500' },
-    { name: 'ベリーブラスト', value: 'from-pink-500 to-rose-500' },
-    { name: 'サイバーパンク', value: 'from-violet-600 to-yellow-400' },
-    { name: 'トロピカルパラダイス', value: 'from-emerald-400 to-cyan-400' },
-  ];
-
-  // グラデーションの値を取得
-  const getGradientValue = () => {
-    if (gradient === 'custom') {
-      // カスタムグラデーションの場合、選択された色を使用
-      return `from-[${startColor}] to-[${endColor}]`;
-    }
-    // プリセットの場合、そのまま返す
-    return gradient;
-  };
-
-  // グラデーションのプレビュースタイル
-  const getPreviewStyle = () => {
-    if (gradient === 'custom') {
-      return {
-        background: `linear-gradient(to right, ${startColor}, ${endColor})`
-      };
-    }
-    // Tailwindのグラデーションクラスをインラインスタイルに変換
-    const [fromColor, toColor] = gradient.split(' ');
-    return {
-      background: `linear-gradient(to right, var(--${fromColor.replace('from-', '')}), var(--${toColor.replace('to-', '')}))`
-    };
-  };
+  const [gradient, setGradient] = useState('custom');
+  const [startColor, setStartColor] = useState('#6366f1');
+  const [endColor, setEndColor] = useState('#ec4899');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,7 +32,7 @@ const CreateSpace: React.FC = () => {
           url,
           runtime,
           category,
-          gradient: getGradientValue(),
+          gradient: getGradientValue(gradient, startColor, endColor),
         }),
       });
 
@@ -109,136 +72,27 @@ const CreateSpace: React.FC = () => {
 
       <main className="container mx-auto px-4 py-8">
         <form onSubmit={handleSubmit} className="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-8 space-y-6">
-          <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-              スペース名
-            </label>
-            <input
-              type="text"
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
-              placeholder="スペースの名前を入力してください"
-            />
-          </div>
+          <SpaceFormFields
+            title={title}
+            setTitle={setTitle}
+            subtitle={subtitle}
+            setSubtitle={setSubtitle}
+            url={url}
+            setUrl={setUrl}
+            runtime={runtime}
+            setRuntime={setRuntime}
+            category={category}
+            setCategory={setCategory}
+          />
 
-          <div>
-            <label htmlFor="subtitle" className="block text-sm font-medium text-gray-700 mb-2">
-              サブタイトル
-            </label>
-            <input
-              type="text"
-              id="subtitle"
-              value={subtitle}
-              onChange={(e) => setSubtitle(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
-              placeholder="スペースの簡単な説明を入力してください"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="url" className="block text-sm font-medium text-gray-700 mb-2">
-              URL
-            </label>
-            <input
-              type="url"
-              id="url"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
-              placeholder="https://example.com"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
-                カテゴリー
-              </label>
-              <select
-                id="category"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
-              >
-                <option value="Audio">Audio</option>
-                <option value="Image">Image</option>
-                <option value="Text">Text</option>
-                <option value="Video">Video</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="runtime" className="block text-sm font-medium text-gray-700 mb-2">
-                ランタイム
-              </label>
-              <select
-                id="runtime"
-                value={runtime}
-                onChange={(e) => setRuntime(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
-              >
-                <option value="ZENO">ZENO</option>
-                <option value="CUDA">CUDA</option>
-                <option value="CPU">CPU</option>
-                <option value="TPU">TPU</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              グラデーション
-            </label>
-            <div className="space-y-4">
-              <select
-                value={gradient}
-                onChange={(e) => setGradient(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
-              >
-                {gradientPresets.map((preset) => (
-                  <option key={preset.value} value={preset.value}>
-                    {preset.name}
-                  </option>
-                ))}
-              </select>
-
-              {gradient === 'custom' && (
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      開始色
-                    </label>
-                    <input
-                      type="color"
-                      value={startColor}
-                      onChange={(e) => setStartColor(e.target.value)}
-                      className="w-full h-10 p-1 rounded cursor-pointer"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      終了色
-                    </label>
-                    <input
-                      type="color"
-                      value={endColor}
-                      onChange={(e) => setEndColor(e.target.value)}
-                      className="w-full h-10 p-1 rounded cursor-pointer"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* グラデーションプレビュー */}
-              <div className="w-full h-16 rounded-lg shadow-inner" style={getPreviewStyle()} />
-            </div>
-          </div>
+          <GradientPicker
+            gradient={gradient}
+            setGradient={setGradient}
+            startColor={startColor}
+            setStartColor={setStartColor}
+            endColor={endColor}
+            setEndColor={setEndColor}
+          />
 
           <div>
             <button

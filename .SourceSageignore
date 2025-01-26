@@ -39,3 +39,5 @@ favicon.ico
 *.jpg
 .venv
 *.db
+*.csv
+.windsurfrules
