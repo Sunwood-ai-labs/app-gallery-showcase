@@ -11,7 +11,7 @@ export interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  name: process.env.NEXT_PUBLIC_SITE_NAME || 'App Gallery Showcase',
+  name: process.env.NEXT_PUBLIC_SITE_NAME || 'App Gallery Showcase v0.3.1',
   description: process.env.NEXT_PUBLIC_SITE_DESCRIPTION || 'プロジェクトを美しく魅力的に紹介するウェブアプリケーション',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
   font: {
