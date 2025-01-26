@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { getTailwindGradientColors } from '@/components/gradients/GradientPicker';
+import { toast } from 'sonner';
 
 interface SpaceCardProps {
   id: string;
@@ -8,6 +12,7 @@ interface SpaceCardProps {
   url: string;
   category: string;
   author: {
+    id: string;
     name: string;
     image: string;
     username: string;
@@ -18,9 +23,10 @@ interface SpaceCardProps {
   createdAt: Date;
   gradient?: string;
   onLike?: (id: string, newLikeCount: number) => void;
+  onDelete?: (id: string) => void;
 }
 
-const SpaceCard: React.FC<SpaceCardProps> = ({  
+const SpaceCard: React.FC<SpaceCardProps> = ({
   id,
   title,
   subtitle,
@@ -32,13 +38,15 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
   runtime,
   createdAt,
   gradient,
-  onLike
+  onLike,
+  onDelete
 }) => {
   const [clickCount, setClickCount] = useState(clicks);
+  const { data: session } = useSession();
 
   const handleCardClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    
+
     try {
       // クリック数を更新
       const response = await fetch('/api/spaces/click', {
@@ -66,21 +74,21 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
     const now = new Date();
     const date = new Date(createdAt);
     const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
-    
+
     if (diffInMinutes < 60) {
       return `${diffInMinutes}分前`;
     }
-    
+
     const diffInHours = Math.floor(diffInMinutes / 60);
     if (diffInHours < 24) {
       return `${diffInHours}時間前`;
     }
-    
+
     // 7日以内の場合は日数を表示
     if (daysAgo < 7) {
       return `${daysAgo}日前`;
     }
-    
+
     return date.toLocaleDateString('ja-JP');
   };
 
@@ -109,6 +117,28 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
     };
   };
 
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!window.confirm('このスペースを削除してもよろしいですか？')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/spaces/delete?spaceId=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        toast.success('スペースを削除しました');
+        onDelete?.(id);
+      }
+    } catch (error) {
+      toast.error('スペースの削除に失敗しました');
+    }
+  };
+
   return (
     <a
       href="#"
@@ -120,7 +150,7 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
         style={getGradientStyle(gradient)}>
         {/* Gradient overlay for better text readability */}
         <div className="absolute inset-0 opacity-20 transition-opacity duration-300 bg-gradient-to-br from-black/20 to-black/30" />
-        
+
         {/* Title and Subtitle with animation */}
         <div className="relative z-10 space-y-2 text-center">
           <h3 className="text-2xl font-bold text-white break-words line-clamp-2 drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-105">
@@ -135,6 +165,23 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
       {/* Hover overlay with animation */}
       <div className="absolute inset-0 flex flex-col justify-between p-4 bg-gradient-to-b from-black/0 via-black/20 to-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out">
         <div className="flex justify-between items-start">
+          {/* Edit and Delete Buttons */}
+          {session?.user?.id === author?.id && (
+            <div className="flex space-x-2">
+              <Link 
+                href={`/edit-space/${id}`}
+                onClick={(e) => e.stopPropagation()}
+                className="p-2 bg-white/80 rounded-full text-gray-700 hover:bg-gray-200 transition-colors"
+              >
+                編集
+              </Link>
+              <button 
+                onClick={handleDelete}
+                className="p-2 bg-red-500/80 rounded-full text-white hover:bg-red-600 transition-colors">
+                削除
+              </button>
+            </div>
+          )}
           <div className="flex gap-2">
             <span className="inline-flex items-center gap-1 text-xs bg-green-500/80 backdrop-blur px-2 py-1 rounded-full text-white shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 ease-out">
               {runtime}
