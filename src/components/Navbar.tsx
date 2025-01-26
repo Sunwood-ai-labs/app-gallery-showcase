@@ -8,30 +8,55 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Menu } from "lucide-react";
+import { siteConfig } from "@/config/site";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
   const [isClient, setIsClient] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   useEffect(() => {
     setIsClient(true);
+    const handleScroll = () => {
+      setScrollPosition(window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   if (!isClient) {
     return null;
   }
 
+  const navbarOpacity = Math.min(0.9 + scrollPosition * 0.001, 1);
+
   return (
-    <nav className="fixed top-0 left-0 w-full bg-white/90 backdrop-blur-md z-50 shadow-sm transition-all duration-300 hover:shadow-md">
-      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+    <nav 
+      className="fixed top-0 left-0 w-full z-50 transition-all duration-300"
+      style={{
+        background: `linear-gradient(135deg, 
+          rgba(255,255,255,${navbarOpacity}) 0%, 
+          rgba(255,255,255,${navbarOpacity * 0.95}) 100%)`
+      }}
+    >
+      {/* グラデーションアニメーション用のオーバーレイ */}
+      <div 
+        className="absolute inset-0 bg-gradient-to-r from-pink-100/20 via-purple-100/20 to-indigo-100/20"
+        style={{
+          animation: 'gradient 15s ease infinite',
+          backgroundSize: '200% 200%',
+        }}
+      />
+
+      <div className="container mx-auto px-4 py-2 flex justify-between items-center relative">
         <div className="flex items-center space-x-4">
           <Link 
             href="/" 
             className="text-2xl font-bold text-gray-800 flex items-center space-x-2 transform transition-transform duration-300 hover:scale-105"
           >
-            <span>🤗</span>
-            <span className="hidden md:inline">App Gallery Showcase</span>
+            <span>{siteConfig.emoji}</span>
+            <span className="hidden md:inline">{siteConfig.name}</span>
           </Link>
         </div>
 
@@ -40,7 +65,7 @@ export default function Navbar() {
             href="/" 
             className={cn(
               buttonVariants({ variant: "ghost", size: "sm" }),
-              "transition-all duration-300 hover:text-primary-500 hover:bg-primary-50 transform hover:scale-105"
+              "transition-all duration-300 hover:text-primary-500 hover:bg-primary-50"
             )}
           >
             Home
@@ -51,7 +76,7 @@ export default function Navbar() {
                 href="/create-space" 
                 className={cn(
                   buttonVariants({ variant: "default", size: "sm" }),
-                  "transition-all duration-300 hover:bg-primary-600 transform hover:scale-105"
+                  "transition-all duration-300 hover:bg-primary-600"
                 )}
               >
                 Create Space
@@ -60,11 +85,11 @@ export default function Navbar() {
                 href="/analytics" 
                 className={cn(
                   buttonVariants({ variant: "ghost", size: "sm" }),
-                  "transition-all duration-300 hover:text-primary-500 hover:bg-primary-50 transform hover:scale-105"
+                  "transition-all duration-300 hover:text-primary-500 hover:bg-primary-50"
                 )}
               >
                 <span>📊</span>
-                <span className="ml-1">分析</span>
+                <span className="ml-1">Analysis</span>
               </Link>
               <div className="flex items-center space-x-2">
                 {session?.user?.image && (
@@ -86,7 +111,7 @@ export default function Navbar() {
                 href="/login" 
                 className={cn(
                   buttonVariants({ variant: "ghost", size: "sm" }),
-                  "transition-all duration-300 hover:text-primary-500 hover:bg-primary-50 transform hover:scale-105"
+                  "transition-all duration-300 hover:text-primary-500 hover:bg-primary-50"
                 )}
               >
                 Login
@@ -95,7 +120,7 @@ export default function Navbar() {
                 href="/signup" 
                 className={cn(
                   buttonVariants({ variant: "default", size: "sm" }),
-                  "transition-all duration-300 hover:bg-primary-600 transform hover:scale-105"
+                  "transition-all duration-300 hover:bg-primary-600"
                 )}
               >
                 Sign Up
@@ -108,7 +133,7 @@ export default function Navbar() {
         <div className="md:hidden flex items-center">
           <button 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="text-gray-600 hover:text-gray-800 focus:outline-none transition-colors duration-300 transform hover:scale-110"
+            className="text-gray-600 hover:text-gray-800 focus:outline-none transition-colors duration-300"
           >
             <Menu size={24} />
           </button>
@@ -117,11 +142,11 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white shadow-md">
+        <div className="md:hidden bg-white/95 backdrop-blur-sm shadow-md">
           <div className="px-4 pt-2 pb-4 space-y-2">
             <Link 
               href="/" 
-              className="block py-2 text-gray-700 hover:bg-primary-50 rounded transition-colors duration-300 hover:text-primary-500"
+              className="block py-2 text-gray-700 hover:bg-primary-50 rounded transition-colors duration-300"
             >
               Home
             </Link>
@@ -129,16 +154,16 @@ export default function Navbar() {
               <>
                 <Link 
                   href="/create-space" 
-                  className="block py-2 text-gray-700 hover:bg-primary-50 rounded transition-colors duration-300 hover:text-primary-500"
+                  className="block py-2 text-gray-700 hover:bg-primary-50 rounded transition-colors duration-300"
                 >
                   Create Space
                 </Link>
                 <Link 
                   href="/analytics" 
-                  className="block py-2 text-gray-700 hover:bg-primary-50 rounded transition-colors duration-300 hover:text-primary-500"
+                  className="block py-2 text-gray-700 hover:bg-primary-50 rounded transition-colors duration-300"
                 >
                   <span>📊</span>
-                  <span className="ml-1">分析</span>
+                  <span className="ml-1">Analysis</span>
                 </Link>
                 <div className="flex items-center space-x-2 py-2">
                   {session?.user?.image && (
@@ -148,7 +173,7 @@ export default function Navbar() {
                       width={32}
                       height={32}
                       priority
-                      className="rounded-full transition-transform duration-300 hover:scale-110 hover:shadow-lg"
+                      className="rounded-full transition-transform duration-300 hover:scale-110"
                     />
                   )}
                   <span className="text-gray-700">{session.user.username || session.user.name}</span>
@@ -159,7 +184,7 @@ export default function Navbar() {
               <>
                 <Link 
                   href="/login" 
-                  className="block py-2 text-gray-700 hover:bg-primary-50 rounded transition-colors duration-300 hover:text-primary-500"
+                  className="block py-2 text-gray-700 hover:bg-primary-50 rounded transition-colors duration-300"
                 >
                   Login
                 </Link>
@@ -174,6 +199,9 @@ export default function Navbar() {
           </div>
         </div>
       )}
+
+      {/* Bottom border with gradient */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
     </nav>
   );
 }

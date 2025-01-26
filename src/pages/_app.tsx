@@ -61,14 +61,14 @@ function MyApp({
       
       <SessionProvider session={session}>
         <div 
-          className={`${defaultFont.variable} ${japaneseFont.variable}`}
+          className={`${defaultFont.variable} ${japaneseFont.variable} min-h-screen`}
           style={{ 
             fontFamily: fonts.getFontFamilyString(),
             ...fonts.getCssVariables() as React.CSSProperties
           }}
         >
           <Navbar />
-          <main className="pt-20">
+          <main className="pt-3"> {/* ナビゲーションバーの下のパディングを調整 */}
             <Component {...pageProps} />
           </main>
           <Toaster
