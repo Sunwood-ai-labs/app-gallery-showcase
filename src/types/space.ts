@@ -13,7 +13,7 @@ export interface Space {
   url: string;
   category: string;
   author: Author;
-  likes: number;
+  clicks: number;
   daysAgo: number;
   runtime: string;
   gradient?: string;
