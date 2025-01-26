@@ -7,6 +7,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    // 1週間前の日付を計算
+    const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
     const spaces = await prisma.space.findMany({
       include: {
         author: {
@@ -17,7 +20,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             image: true,
           },
         },
-        likes: true,
+        clicks: {
+          where: {
+            // 1週間以内のクリックのみを取得
+            createdAt: { gte: oneWeekAgo }
+          }
+        },
       },
       orderBy: {
         createdAt: 'desc',
@@ -27,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // 各スペースのいいね数と作成日からの経過日数を計算
     const spacesWithMetadata = spaces.map(space => ({
       ...space,
-      likes: space.likes.length,
+      clicks: space.clicks.length,
       daysAgo: Math.floor((Date.now() - new Date(space.createdAt).getTime()) / (1000 * 60 * 60 * 24)),
     }));
 
