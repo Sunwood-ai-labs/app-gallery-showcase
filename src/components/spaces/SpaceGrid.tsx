@@ -6,14 +6,22 @@ interface SpaceGridProps {
   spaces: Space[];
   title?: string;
   limit?: number;
+  onSpaceUpdate?: (id: string, updates: Partial<Space>) => void;
 }
 
 export const SpaceGrid: React.FC<SpaceGridProps> = ({ 
   spaces, 
   title,
-  limit 
+  limit,
+  onSpaceUpdate
 }) => {
   const displaySpaces = limit ? spaces.slice(0, limit) : spaces;
+
+  const handleClick = (id: string, newClickCount: number) => {
+    onSpaceUpdate?.(id, {
+      clicks: newClickCount
+    });
+  };
 
   return (
     <section>
@@ -26,6 +34,8 @@ export const SpaceGrid: React.FC<SpaceGridProps> = ({
           <SpaceCard
             key={space.id}
             {...space}
+            onLike={handleClick}
+            createdAt={space.createdAt || new Date()}
           />
         ))}
       </div>
