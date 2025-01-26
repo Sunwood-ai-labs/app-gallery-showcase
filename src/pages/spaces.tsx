@@ -20,9 +20,9 @@ const filterAndSortSpaces = (
         case 'latest':
           return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
         case 'likes':
-          return b.likes - a.likes;
+          return b.clicks - a.clicks;
         default: // trending
-          const getScore = (space: Space) => (space.likes / (space.daysAgo + 1));
+          const getScore = (space: Space) => (space.clicks / (space.daysAgo + 1));
           return getScore(b) - getScore(a);
       }
     });
@@ -80,7 +80,7 @@ const Spaces: React.FC = () => {
           title={
             sortBy === 'trending' ? '⭐ Trending Spaces' :
             sortBy === 'latest' ? '🆕 Latest Spaces' :
-            '❤️ Most Liked Spaces'
+            '👀 Most Viewed Spaces'
           }
         />
       </main>
