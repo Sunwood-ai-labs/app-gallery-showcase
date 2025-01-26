@@ -48,12 +48,8 @@ const Home: NextPage = () => {
   };
 
   const getFilteredAndSortedSpaces = () => {
-    // トレンディングスペースを除外した残りのスペース
-    const remainingSpaces = spaces.filter(space => 
-      !trendingSpaces.find(ts => ts.id === space.id)
-    );
-
-    return remainingSpaces.filter((space: Space) => {
+ 
+    return spaces.filter((space: Space) => {
       const matchesSearch =
         space.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         space.author.username.toLowerCase().includes(searchTerm.toLowerCase());
