@@ -13,6 +13,21 @@ const Home: NextPage = () => {
   const [spaces, setSpaces] = useState<Space[]>([]);
   const [trendingSpaces, setTrendingSpaces] = useState<Space[]>([]);
 
+  const removeSpace = (id: string) => {
+    setSpaces(prevSpaces => prevSpaces.filter(space => space.id !== id));
+    setTrendingSpaces(prevSpaces => prevSpaces.filter(space => space.id !== id));
+  };
+
+  const handleSpaceUpdate = (id: string, updates: Partial<Space>) => {
+    const updateSpaceList = (prevSpaces: Space[]) =>
+      prevSpaces.map(space => 
+        space.id === id ? { ...space, ...updates } : space
+      );
+    
+    setSpaces(updateSpaceList);
+    setTrendingSpaces(updateSpaceList);
+  };
+
   useEffect(() => {
     const fetchSpaces = async () => {
       const response = await fetch('/api/spaces');
@@ -31,24 +46,7 @@ const Home: NextPage = () => {
     fetchSpaces();
   }, []);
 
-  const handleSpaceUpdate = (id: string, updates: Partial<Space>) => {
-    // トレンディングスペースの更新
-    setTrendingSpaces(prevSpaces =>
-      prevSpaces.map(space =>
-        space.id === id ? { ...space, ...updates } : space
-      )
-    );
-
-    // 全スペースの更新
-    setSpaces(prevSpaces =>
-      prevSpaces.map(space =>
-        space.id === id ? { ...space, ...updates } : space
-      )
-    );
-  };
-
   const getFilteredAndSortedSpaces = () => {
- 
     return spaces.filter((space: Space) => {
       const matchesSearch =
         space.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -64,7 +62,7 @@ const Home: NextPage = () => {
           return b.clicks - a.clicks;
         default: // 'trending'の場合もここで処理
           return b.clicks - a.clicks;
-    }
+      }
     });
   };
 
@@ -150,6 +148,7 @@ const Home: NextPage = () => {
             spaces={trendingSpaces}
             title=""
             onSpaceUpdate={handleSpaceUpdate}
+            onSpaceDelete={removeSpace}
           />
         </section>
 
@@ -164,6 +163,7 @@ const Home: NextPage = () => {
             spaces={filteredAndSortedSpaces}
             title=""
             onSpaceUpdate={handleSpaceUpdate}
+            onSpaceDelete={removeSpace}
           />
         </section>
       </main>
