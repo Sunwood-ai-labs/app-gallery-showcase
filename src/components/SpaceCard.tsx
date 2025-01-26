@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { getTailwindGradientColors } from '@/components/gradients/GradientPicker';
 
 interface SpaceCardProps {
@@ -12,10 +12,12 @@ interface SpaceCardProps {
     image: string;
     username: string;
   };
-  likes: number;
+  clicks: number;
   daysAgo: number;
   runtime: string;
+  createdAt: Date;
   gradient?: string;
+  onLike?: (id: string, newLikeCount: number) => void;
 }
 
 const SpaceCard: React.FC<SpaceCardProps> = ({  
@@ -25,31 +27,20 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
   url,
   category,
   author,
-  likes,
+  clicks,
   daysAgo,
   runtime,
-  gradient
+  createdAt,
+  gradient,
+  onLike
 }) => {
-  const [clickCount, setClickCount] = useState(likes);
+  const [clickCount, setClickCount] = useState(clicks);
 
-  useEffect(() => {
-    const fetchClickCount = async () => {
-      try {
-        const response = await fetch(`/api/spaces/click?spaceId=${id}`);
-        const data = await response.json();
-        if (response.ok) {
-          setClickCount(data.clickCount);
-        }
-      } catch (error) {
-        console.error('Error fetching click count:', error);
-      }
-    };
-
-    fetchClickCount();
-  }, [id]);
-
-  const recordClick = async () => {
+  const handleCardClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    
     try {
+      // クリック数を更新
       const response = await fetch('/api/spaces/click', {
         method: 'POST',
         headers: {
@@ -57,19 +48,40 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
         },
         body: JSON.stringify({ spaceId: id }),
       });
-      const data = await response.json();
+
       if (response.ok) {
-        setClickCount(data.clickCount);
+        const newCount = clickCount + 1;
+        setClickCount(newCount);
+        // 親コンポーネントに通知
+        onLike?.(id, newCount); // このコールバック名も後で更新します
       }
     } catch (error) {
-      console.error('Error recording click:', error);
+      console.error('Error updating like count:', error);
     }
+
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  const handleCardClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    recordClick();
-    window.open(url, '_blank', 'noopener,noreferrer');
+  const getTimeAgo = () => {
+    const now = new Date();
+    const date = new Date(createdAt);
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+    
+    if (diffInMinutes < 60) {
+      return `${diffInMinutes}分前`;
+    }
+    
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) {
+      return `${diffInHours}時間前`;
+    }
+    
+    // 7日以内の場合は日数を表示
+    if (daysAgo < 7) {
+      return `${daysAgo}日前`;
+    }
+    
+    return date.toLocaleDateString('ja-JP');
   };
 
   const getGradientStyle = (gradientValue?: string) => {
@@ -131,11 +143,11 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
               {category}
             </span>
           </div>
-          <div className="flex items-center space-x-1 text-white bg-black/40 backdrop-blur-sm px-2 py-1 rounded-full transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 ease-out">
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M15.5 4.5a3.5 3.5 0 00-5-3.5c-1.5 0-3 .6-4 2-1-1.4-2.5-2-4-2a3.5 3.5 0 00-3.5 3.5c0 1.8.7 3.4 2.1 4.6l7.4 7.4 7.4-7.4c1.4-1.2 2.1-2.8 2.1-4.6z"/>
+          <div className="flex items-center space-x-1 text-white bg-red-500/80 backdrop-blur-sm px-2 py-1 rounded-full transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 ease-out">
+            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
             </svg>
-            <span>{clickCount || 0}回</span>
+            <span>{clickCount || 0}</span>
           </div>
         </div>
 
@@ -143,7 +155,7 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
           <span className="font-medium hover:text-white transition-colors duration-200">
             @{author.username || author.name}
           </span>
-          <span className="text-white/80">{daysAgo} 日前</span>
+          <span className="text-white/80">{getTimeAgo()}</span>
         </div>
       </div>
     </a>
