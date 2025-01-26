@@ -48,7 +48,7 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
         >
           <option value="trending">Trending</option>
           <option value="latest">Latest</option>
-          <option value="likes">Most Liked</option>
+          <option value="likes">Most Viewed</option>
         </select>
       </div>
     </div>
