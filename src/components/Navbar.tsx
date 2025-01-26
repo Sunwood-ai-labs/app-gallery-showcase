@@ -56,6 +56,16 @@ export default function Navbar() {
               >
                 Create Space
               </Link>
+              <Link 
+                href="/analytics" 
+                className={cn(
+                  buttonVariants({ variant: "ghost", size: "sm" }),
+                  "transition-all duration-300 hover:text-primary-500 hover:bg-primary-50 transform hover:scale-105"
+                )}
+              >
+                <span>📊</span>
+                <span className="ml-1">分析</span>
+              </Link>
               <div className="flex items-center space-x-2">
                 {session?.user?.image && (
                   <Image
@@ -122,6 +132,13 @@ export default function Navbar() {
                   className="block py-2 text-gray-700 hover:bg-primary-50 rounded transition-colors duration-300 hover:text-primary-500"
                 >
                   Create Space
+                </Link>
+                <Link 
+                  href="/analytics" 
+                  className="block py-2 text-gray-700 hover:bg-primary-50 rounded transition-colors duration-300 hover:text-primary-500"
+                >
+                  <span>📊</span>
+                  <span className="ml-1">分析</span>
                 </Link>
                 <div className="flex items-center space-x-2 py-2">
                   {session?.user?.image && (
