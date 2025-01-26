@@ -93,14 +93,16 @@ export default function Navbar() {
               </Link>
               <div className="flex items-center space-x-2">
                 {session?.user?.image && (
-                  <Image
-                    src={session?.user?.image}
-                    alt="Profile"
-                    width={32}
-                    height={32}
-                    priority
-                    className="rounded-full transition-transform duration-300 hover:scale-110 hover:shadow-lg"
-                  />
+                  <Link href="/profile">
+                    <Image
+                      src={session?.user?.image}
+                      alt="Profile"
+                      width={32}
+                      height={32}
+                      priority
+                      className="rounded-full transition-transform duration-300 hover:scale-110 hover:shadow-lg"
+                    />
+                  </Link>
                 )}
                 <LogoutButton />
               </div>
@@ -167,14 +169,16 @@ export default function Navbar() {
                 </Link>
                 <div className="flex items-center space-x-2 py-2">
                   {session?.user?.image && (
-                    <Image
-                      src={session?.user?.image}
-                      alt="Profile"
-                      width={32}
-                      height={32}
-                      priority
-                      className="rounded-full transition-transform duration-300 hover:scale-110"
-                    />
+                    <Link href="/profile">
+                      <Image
+                        src={session?.user?.image}
+                        alt="Profile"
+                        width={32}
+                        height={32}
+                        priority
+                        className="rounded-full transition-transform duration-300 hover:scale-110"
+                      />
+                    </Link>
                   )}
                   <span className="text-gray-700">{session.user.username || session.user.name}</span>
                 </div>
