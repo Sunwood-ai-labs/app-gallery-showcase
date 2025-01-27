@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ message: 'ログインが必要です' });
     }
 
-    const { title, subtitle, url, runtime, category, gradient } = req.body;
+    const { title, subtitle, url, runtime, category, gradient, repository, repoIcon } = req.body;
 
     // Validation
     if (!title || !subtitle || !url || !runtime || !category) {
@@ -31,6 +31,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ 
         message: '有効なURLを入力してください'
       });
+    }
+
+    // リポジトリURLの形式を検証（入力されている場合のみ）
+    if (repository) {
+      try {
+        const repoUrl = new URL(repository);
+        if (!repoUrl.hostname.includes('github.com')) {
+          return res.status(400).json({
+            message: '現在GitHubのリポジトリURLのみサポートしています'
+          });
+        }
+      } catch {
+        return res.status(400).json({
+          message: '有効なリポジトリURLを入力してください'
+        });
+      }
     }
 
     // グラデーションの処理
@@ -60,6 +76,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       url,
       runtime,
       category,
+      repository,
+      repoIcon,
       authorId: session.user.id,
       visibility: 'public'
     };
