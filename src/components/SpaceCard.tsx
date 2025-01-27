@@ -3,14 +3,17 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { getTailwindGradientColors } from '@/components/gradients/GradientPicker';
-import { Pencil } from 'lucide-react';
+import { Pencil, Github } from 'lucide-react';
 import { toast } from 'sonner';
+import Image from 'next/image';
 
 interface SpaceCardProps {
   id: string;
   title: string;
   subtitle: string;
   url: string;
+  repository?: string;
+  repoIcon?: string;
   category: string;
   author: {
     id: string;
@@ -32,6 +35,8 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
   title,
   subtitle,
   url,
+  repository,
+  repoIcon,
   category,
   author,
   clicks,
@@ -62,13 +67,21 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
         const newCount = clickCount + 1;
         setClickCount(newCount);
         // 親コンポーネントに通知
-        onLike?.(id, newCount); // このコールバック名も後で更新します
+        onLike?.(id, newCount);
       }
     } catch (error) {
       console.error('Error updating like count:', error);
     }
 
     window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleRepoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (repository) {
+      window.open(repository, '_blank', 'noopener,noreferrer');
+    }
   };
 
   const getTimeAgo = () => {
@@ -139,6 +152,27 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
             {subtitle}
           </p>
         </div>
+
+        {/* Repository icon */}
+        {repository && (
+          <div 
+            onClick={handleRepoClick}
+            className="absolute top-2 right-2 flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1.5 transition-transform duration-300 transform scale-90 hover:scale-100"
+          >
+            {repoIcon ? (
+              <Image
+                src={repoIcon}
+                alt="Repository"
+                width={20}
+                height={20}
+                className="rounded-full"
+              />
+            ) : (
+              <Github className="w-5 h-5 text-gray-700" />
+            )}
+            <span className="text-xs font-medium text-gray-700">Repository</span>
+          </div>
+        )}
       </div>
 
       {/* Hover overlay with animation */}
