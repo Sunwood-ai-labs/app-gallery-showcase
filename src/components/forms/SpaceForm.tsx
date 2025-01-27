@@ -67,7 +67,7 @@ export const SpaceFormFields: React.FC<SpaceFormFieldsProps> = ({
 
       <div>
         <label htmlFor="repository" className="block text-sm font-medium text-gray-700 mb-2">
-          リポジトリURL（オプション）
+          プロジェクトURL（オプション）<span className="text-sm text-gray-500">GitHubの場合、アバターが自動的に設定されます</span>
         </label>
         <input
           type="url"
@@ -75,19 +75,21 @@ export const SpaceFormFields: React.FC<SpaceFormFieldsProps> = ({
           value={repository}
           onChange={(e) => {
             setRepository(e.target.value);
-            // GitHubアイコンURLを自動生成
+            // アイコンをリセット
+            setRepoIcon('');
+            // GitHubの場合のみアイコンを自動生成
             if (e.target.value) {
               try {
                 const url = new URL(e.target.value);
                 if (url.hostname === 'github.com') {
                   const [owner, repo] = url.pathname.split('/').filter(Boolean);
-                  setRepoIcon(`https://github.com/${owner}.png`);
+                  if (owner) setRepoIcon(`https://github.com/${owner}.png`);
                 }
               } catch (e) {}
             }
           }}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF9D00]"
-          placeholder="https://github.com/username/repository"
+          placeholder="https://example.com/ または https://github.com/username/repository"
         />
       </div>
 
