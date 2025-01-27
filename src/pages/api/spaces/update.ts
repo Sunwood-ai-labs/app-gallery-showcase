@@ -54,22 +54,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    // リポジトリURLの形式を検証（入力されている場合のみ）
-    if (repository) {
-      try {
-        const repoUrl = new URL(repository);
-        if (!repoUrl.hostname.includes('github.com')) {
-          return res.status(400).json({
-            message: '現在GitHubのリポジトリURLのみサポートしています'
-          });
-        }
-      } catch {
-        return res.status(400).json({
-          message: '有効なリポジトリURLを入力してください'
-        });
-      }
-    }
-
     // グラデーションの処理
     const gradientData: {
       gradient: string;
@@ -89,6 +73,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
+    // リポジトリのアイコン処理（GitHubの場合のみ）
+    let calculatedRepoIcon = repoIcon;
+    if (repository && repository.includes('github.com')) {
+      try {
+        const repoUrl = new URL(repository);
+        const [owner] = repoUrl.pathname.split('/').filter(Boolean);
+        calculatedRepoIcon = `https://github.com/${owner}.png`;
+      } catch {}
+    }
+
     // Update space with new data
     const updatedSpace = await prisma.space.update({
       where: { id },
@@ -99,7 +93,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         runtime,
         category,
         repository,
-        repoIcon,
+        repoIcon: calculatedRepoIcon,
         ...gradientData
       }
     });
