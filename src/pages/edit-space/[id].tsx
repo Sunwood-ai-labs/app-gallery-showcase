@@ -14,6 +14,8 @@ interface EditSpacePageProps {
     title: string;
     subtitle: string;
     url: string;
+    repository?: string;
+    repoIcon?: string;
     runtime: string;
     category: string;
     gradient?: string;
@@ -26,6 +28,8 @@ export default function EditSpacePage({ space }: EditSpacePageProps) {
   const [title, setTitle] = useState(space.title);
   const [subtitle, setSubtitle] = useState(space.subtitle);
   const [url, setUrl] = useState(space.url);
+  const [repository, setRepository] = useState(space.repository || '');
+  const [repoIcon, setRepoIcon] = useState(space.repoIcon || '');
   const [runtime, setRuntime] = useState(space.runtime);
   const [category, setCategory] = useState(space.category);
   const [gradient, setGradient] = useState(space.gradient || 'custom');
@@ -45,6 +49,8 @@ export default function EditSpacePage({ space }: EditSpacePageProps) {
           id: space.id,
           title,
           subtitle,
+          repository,
+          repoIcon,
           url,
           runtime,
           category,
@@ -110,6 +116,10 @@ export default function EditSpacePage({ space }: EditSpacePageProps) {
             setTitle={setTitle}
             subtitle={subtitle}
             setSubtitle={setSubtitle}
+            repository={repository}
+            setRepository={setRepository}
+            repoIcon={repoIcon}
+            setRepoIcon={setRepoIcon}
             url={url}
             setUrl={setUrl}
             runtime={runtime}
@@ -184,6 +194,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       title: true,
       subtitle: true,
       url: true,
+      repository: true,
+      repoIcon: true,
       runtime: true,
       category: true,
       gradient: true,
