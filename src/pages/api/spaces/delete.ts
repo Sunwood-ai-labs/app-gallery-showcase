@@ -38,9 +38,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(403).json({ message: 'Not authorized to delete this space' });
     }
 
-    // スペースの削除
-    await prisma.space.delete({
-      where: { id: spaceId },
+    // トランザクションで関連レコードとスペースを削除
+    await prisma.$transaction(async (tx) => {
+      // まず、関連するLikeレコードを削除
+      await tx.like.deleteMany({
+        where: { spaceId },
+      });
+
+      // 次に、関連するClickレコードを削除
+      await tx.click.deleteMany({
+        where: { spaceId },
+      });
+
+      // 最後に、スペースを削除
+      await tx.space.delete({
+        where: { id: spaceId },
+      });
     });
 
     return res.status(200).json({ message: 'Space deleted successfully' });
