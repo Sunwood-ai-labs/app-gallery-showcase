@@ -3,6 +3,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { getTailwindGradientColors } from '@/components/gradients/GradientPicker';
+import { Pencil } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface SpaceCardProps {
@@ -117,28 +118,6 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
     };
   };
 
-  const handleDelete = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (!window.confirm('このスペースを削除してもよろしいですか？')) {
-      return;
-    }
-
-    try {
-      const response = await fetch(`/api/spaces/delete?spaceId=${id}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        toast.success('スペースを削除しました');
-        onDelete?.(id);
-      }
-    } catch (error) {
-      toast.error('スペースの削除に失敗しました');
-    }
-  };
-
   return (
     <a
       href="#"
@@ -167,20 +146,13 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
         <div className="flex justify-between items-start">
           {/* Edit and Delete Buttons */}
           {session?.user?.id === author?.id && (
-            <div className="flex space-x-2">
-              <Link 
-                href={`/edit-space/${id}`}
-                onClick={(e) => e.stopPropagation()}
-                className="p-2 bg-white/80 rounded-full text-gray-700 hover:bg-gray-200 transition-colors"
-              >
-                編集
-              </Link>
-              <button 
-                onClick={handleDelete}
-                className="p-2 bg-red-500/80 rounded-full text-white hover:bg-red-600 transition-colors">
-                削除
-              </button>
-            </div>
+            <Link 
+              href={`/edit-space/${id}`}
+              onClick={(e) => e.stopPropagation()}
+              className="p-2 bg-white/80 rounded-full text-gray-700 hover:bg-gray-200 transition-colors"
+            >
+              <Pencil className="w-4 h-4" />
+            </Link>
           )}
           <div className="flex gap-2">
             <span className="inline-flex items-center gap-1 text-xs bg-green-500/80 backdrop-blur px-2 py-1 rounded-full text-white shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 ease-out">
