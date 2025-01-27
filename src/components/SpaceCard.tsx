@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { getTailwindGradientColors } from '@/components/gradients/GradientPicker';
-import { Pencil, Github, GitBranch, Globe, Code } from 'lucide-react';
+import { Pencil, Github, GitBranch, Book, Code } from 'lucide-react';
 import { toast } from 'sonner'; 
 import Image from 'next/image';
 
@@ -76,13 +76,6 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  const handleRepoClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (repository) {
-      window.open(repository, '_blank', 'noopener,noreferrer');
-    }
-  };
   
   const getUrlTypeInfo = (urlString?: string) => {
     if (!urlString) return null;
@@ -109,7 +102,7 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
     
     // その他のURL
     return {
-      icon: <Globe className="w-5 h-5 text-gray-700" />,
+      icon: <Book className="w-5 h-5 text-gray-700" />,
       text: 'Website'
     };
   };
@@ -182,9 +175,12 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
 
         {/* Repository/Website icon */}
         {repository && (
-          <div 
-            onClick={handleRepoClick}
-            className="absolute top-2 right-2 flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1.5 transition-transform duration-300 transform scale-90 hover:scale-100 z-20"
+          <a 
+            href={repository}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="absolute top-2 right-2 flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1.5 transition-all duration-300 transform scale-90 hover:scale-100 hover:bg-white hover:shadow-md z-20 cursor-pointer"
           >
             {repoIcon ? (
               <Image
@@ -200,7 +196,7 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
             <span className="text-xs font-medium text-gray-700">
               {getUrlTypeInfo(repository)?.text}
             </span>
-          </div>
+          </a>
         )}
 
         {/* Gradient overlay for better text readability */}
@@ -225,7 +221,7 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
             <Link 
               href={`/edit-space/${id}`}
               onClick={(e) => e.stopPropagation()}
-              className="p-2 bg-white/80 rounded-full text-gray-700 hover:bg-gray-200 transition-colors"
+              className="p-2 bg-white/80 rounded-full text-gray-700 hover:bg-white hover:shadow-md transition-all"
             >
               <Pencil className="w-4 h-4" />
             </Link>
