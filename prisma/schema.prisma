@@ -65,6 +65,8 @@ model Space {
   title       String
   subtitle    String
   description String?
+  repository  String?
+  repoIcon    String?
   url         String
   author      User     @relation(fields: [authorId], references: [id])
   authorId    String

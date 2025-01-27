@@ -10,6 +10,8 @@ const CreateSpace: React.FC = () => {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
+  const [repository, setRepository] = useState('');
+  const [repoIcon, setRepoIcon] = useState('');
   const [url, setUrl] = useState('');
   const [runtime, setRuntime] = useState('ZENO');
   const [category, setCategory] = useState('Audio');
@@ -29,6 +31,8 @@ const CreateSpace: React.FC = () => {
         body: JSON.stringify({
           title,
           subtitle,
+          repository,
+          repoIcon,
           url,
           runtime,
           category,
@@ -77,6 +81,10 @@ const CreateSpace: React.FC = () => {
             setTitle={setTitle}
             subtitle={subtitle}
             setSubtitle={setSubtitle}
+            repository={repository}
+            setRepository={setRepository}
+            repoIcon={repoIcon}
+            setRepoIcon={setRepoIcon}
             url={url}
             setUrl={setUrl}
             runtime={runtime}

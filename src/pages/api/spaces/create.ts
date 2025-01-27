@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ message: 'ログインが必要です' });
     }
 
-    const { title, subtitle, url, runtime, category, gradient } = req.body;
+    const { title, subtitle, url, runtime, category, gradient, repository, repoIcon } = req.body;
 
     // Validation
     if (!title || !subtitle || !url || !runtime || !category) {
@@ -53,6 +53,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
+    // リポジトリのアイコン処理（GitHubの場合のみ）
+    let calculatedRepoIcon = repoIcon;
+    if (repository && repository.includes('github.com')) {
+      try {
+        const repoUrl = new URL(repository);
+        const [owner] = repoUrl.pathname.split('/').filter(Boolean);
+        calculatedRepoIcon = `https://github.com/${owner}.png`;
+      } catch {}
+    }
+
     // Create space with updated data
     const spaceData = {
       title,
@@ -60,6 +70,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       url,
       runtime,
       category,
+      repository,
+      repoIcon: calculatedRepoIcon,
       authorId: session.user.id,
       visibility: 'public'
     };

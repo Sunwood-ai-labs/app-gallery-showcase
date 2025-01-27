@@ -14,6 +14,8 @@ interface EditSpacePageProps {
     title: string;
     subtitle: string;
     url: string;
+    repository?: string;
+    repoIcon?: string;
     runtime: string;
     category: string;
     gradient?: string;
@@ -26,6 +28,8 @@ export default function EditSpacePage({ space }: EditSpacePageProps) {
   const [title, setTitle] = useState(space.title);
   const [subtitle, setSubtitle] = useState(space.subtitle);
   const [url, setUrl] = useState(space.url);
+  const [repository, setRepository] = useState(space.repository || '');
+  const [repoIcon, setRepoIcon] = useState(space.repoIcon || '');
   const [runtime, setRuntime] = useState(space.runtime);
   const [category, setCategory] = useState(space.category);
   const [gradient, setGradient] = useState(space.gradient || 'custom');
@@ -45,6 +49,8 @@ export default function EditSpacePage({ space }: EditSpacePageProps) {
           id: space.id,
           title,
           subtitle,
+          repository,
+          repoIcon,
           url,
           runtime,
           category,
@@ -59,6 +65,32 @@ export default function EditSpacePage({ space }: EditSpacePageProps) {
       }
 
       toast.success('スペースが更新されました');
+      router.push('/');
+    } catch (error: any) {
+      toast.error('エラーが発生しました', {
+        description: error.message
+      });
+    }
+  };
+
+  const handleDelete = async () => {
+    // 削除確認
+    const isConfirmed = window.confirm('このスペースを削除してもよろしいですか？\nこの操作は取り消せません。');
+    
+    if (!isConfirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/spaces/delete?spaceId=${space.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('スペースの削除に失敗しました');
+      }
+
+      toast.success('スペースを削除しました');
       router.push('/');
     } catch (error: any) {
       toast.error('エラーが発生しました', {
@@ -84,6 +116,10 @@ export default function EditSpacePage({ space }: EditSpacePageProps) {
             setTitle={setTitle}
             subtitle={subtitle}
             setSubtitle={setSubtitle}
+            repository={repository}
+            setRepository={setRepository}
+            repoIcon={repoIcon}
+            setRepoIcon={setRepoIcon}
             url={url}
             setUrl={setUrl}
             runtime={runtime}
@@ -101,7 +137,7 @@ export default function EditSpacePage({ space }: EditSpacePageProps) {
             setEndColor={setEndColor}
           />
 
-          <div className="flex justify-end space-x-4">
+          <div className="flex justify-between items-center">
             <button
               type="button"
               onClick={() => router.back()}
@@ -109,12 +145,21 @@ export default function EditSpacePage({ space }: EditSpacePageProps) {
             >
               キャンセル
             </button>
-            <button
-              type="submit"
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#FF9D00] hover:bg-[#FF8A00] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF9D00]"
-            >
-              更新
-            </button>
+            <div className="flex space-x-4">
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              >
+                削除
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#FF9D00] hover:bg-[#FF8A00] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF9D00]"
+              >
+                更新
+              </button>
+            </div>
           </div>
         </form>
       </main>
@@ -149,6 +194,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       title: true,
       subtitle: true,
       url: true,
+      repository: true,
+      repoIcon: true,
       runtime: true,
       category: true,
       gradient: true,

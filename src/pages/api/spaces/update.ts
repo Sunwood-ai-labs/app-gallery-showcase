@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ message: 'ログインが必要です' });
     }
 
-    const { id, title, subtitle, url, runtime, category, gradient } = req.body;
+    const { id, title, subtitle, url, runtime, category, gradient, repository, repoIcon } = req.body;
 
     if (!id) {
       return res.status(400).json({ message: 'Space ID is required' });
@@ -73,6 +73,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
+    // リポジトリのアイコン処理（GitHubの場合のみ）
+    let calculatedRepoIcon = repoIcon;
+    if (repository && repository.includes('github.com')) {
+      try {
+        const repoUrl = new URL(repository);
+        const [owner] = repoUrl.pathname.split('/').filter(Boolean);
+        calculatedRepoIcon = `https://github.com/${owner}.png`;
+      } catch {}
+    }
+
     // Update space with new data
     const updatedSpace = await prisma.space.update({
       where: { id },
@@ -82,6 +92,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         url,
         runtime,
         category,
+        repository,
+        repoIcon: calculatedRepoIcon,
         ...gradientData
       }
     });
