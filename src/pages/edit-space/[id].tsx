@@ -67,6 +67,32 @@ export default function EditSpacePage({ space }: EditSpacePageProps) {
     }
   };
 
+  const handleDelete = async () => {
+    // 削除確認
+    const isConfirmed = window.confirm('このスペースを削除してもよろしいですか？\nこの操作は取り消せません。');
+    
+    if (!isConfirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/spaces/delete?spaceId=${space.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('スペースの削除に失敗しました');
+      }
+
+      toast.success('スペースを削除しました');
+      router.push('/');
+    } catch (error: any) {
+      toast.error('エラーが発生しました', {
+        description: error.message
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Head>
@@ -101,7 +127,7 @@ export default function EditSpacePage({ space }: EditSpacePageProps) {
             setEndColor={setEndColor}
           />
 
-          <div className="flex justify-end space-x-4">
+          <div className="flex justify-between items-center">
             <button
               type="button"
               onClick={() => router.back()}
@@ -109,12 +135,21 @@ export default function EditSpacePage({ space }: EditSpacePageProps) {
             >
               キャンセル
             </button>
-            <button
-              type="submit"
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#FF9D00] hover:bg-[#FF8A00] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF9D00]"
-            >
-              更新
-            </button>
+            <div className="flex space-x-4">
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              >
+                削除
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#FF9D00] hover:bg-[#FF8A00] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF9D00]"
+              >
+                更新
+              </button>
+            </div>
           </div>
         </form>
       </main>
