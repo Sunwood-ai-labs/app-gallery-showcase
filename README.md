@@ -37,7 +37,24 @@
    npm run dev
    ```
 
-## 📝 コミットメッセージ形式
+## 🐳 Docker イメージのビルドとプッシュ
+1.  Dockerfile を使用して Docker イメージをビルドします。
+    ```bash
+    docker build -t ghcr.io/<your-github-username>/hf-space-card-showcase:latest .
+    ```
+2.  GitHub Container Registry に Docker イメージをプッシュします。
+    ```bash
+    docker push ghcr.io/<your-github-username>/hf-space-card-showcase:latest
+    ```
+    - GitHub Actions ワークフローを使用すると、main ブランチへのプッシュ時に自動的に Docker イメージがビルドされ、プッシュされます。
+
+## 🚀 アプリケーションの起動
+- Docker を使用してアプリケーションを起動します。
+    ```bash
+    docker run -p 3000:3000 ghcr.io/<your-github-username>/hf-space-card-showcase:latest
+    ```
+
+## � コミットメッセージ形式
 - コミットメッセージは以下の形式に従うこと:
   ```
   <絵文字> <タイプ> #<Issue番号>: <タイトル>
