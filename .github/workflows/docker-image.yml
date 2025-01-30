@@ -25,7 +25,7 @@ jobs:
         platform:
           - linux/amd64
           - linux/arm64
-    if: github.repository == 'Sunwood-ai-labs/app-gallery-showcase'  # ここは変更しない
+    if: github.repository == 'Sunwood-ai-labs/app-gallery-showcase'
     steps:
       - uses: actions/checkout@v3
       
@@ -45,11 +45,11 @@ jobs:
           
       - name: Build Docker Image
         run: |
-          docker build --tag ghcr.io/${{ github.repository_owner | lower }}/app-gallery-showcase:latest \
-          --tag ghcr.io/${{ github.repository_owner | lower }}/app-gallery-showcase:${{ steps.meta.outputs.version }} \
+          docker build --tag ghcr.io/sunwood-ai-labs/app-gallery-showcase:latest \
+          --tag ghcr.io/sunwood-ai-labs/app-gallery-showcase:${{ steps.meta.outputs.version }} \
           .
           
       - name: Push Docker Image
         run: |
-          docker push ghcr.io/${{ github.repository_owner | lower }}/app-gallery-showcase:latest
-          docker push ghcr.io/${{ github.repository_owner | lower }}/app-gallery-showcase:${{ steps.meta.outputs.version }}
+          docker push ghcr.io/sunwood-ai-labs/app-gallery-showcase:latest
+          docker push ghcr.io/sunwood-ai-labs/app-gallery-showcase:${{ steps.meta.outputs.version }}
