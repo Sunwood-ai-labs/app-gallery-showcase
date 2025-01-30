@@ -51,7 +51,7 @@ export default function AnalyticsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Head>
-        <title>スペース分析 - Hugging Face Spaces</title>
+        <title>スペース分析 - App Gallery Showcase v0.3</title>
         <meta name="description" content="スペースの利用状況と統計を分析" />
       </Head>
 

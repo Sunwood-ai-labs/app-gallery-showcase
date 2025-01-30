@@ -1,7 +1,21 @@
-# 🚀 App Gallery Showcase v0.3
-
 <div align="center">
-  <img src="assets/header.svg" alt="App Gallery Showcase Header" width="600">
+
+![App Gallery Showcase Header](https://github.com/user-attachments/assets/24a2edc1-dc5e-4dda-8d1a-638ab29aede7)
+
+# 📊 App Gallery Showcase
+
+**プロジェクトを美しく魅力的に紹介するウェブアプリケーション**
+
+[![GitHub stars](https://img.shields.io/github/stars/Sunwood-ai-labs/hf-space-card-showcase?style=social)](https://github.com/Sunwood-ai-labs/hf-space-card-showcase)
+[![GitHub license](https://img.shields.io/github/license/Sunwood-ai-labs/hf-space-card-showcase)](https://github.com/Sunwood-ai-labs/hf-space-card-showcase/blob/main/LICENSE)
+
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![NextAuth.js](https://img.shields.io/badge/NextAuth.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://next-auth.js.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)](https://www.prisma.io/)
+[![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+
 </div>
 
 ## 📖 はじめに

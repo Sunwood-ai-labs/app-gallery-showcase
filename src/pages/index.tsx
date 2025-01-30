@@ -71,7 +71,7 @@ const Home: NextPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Head>
-        <title>Hugging Face Spaces Gallery</title>
+        <title>App Gallery Showcase v0.3</title>
         <meta name="description" content="Discover amazing AI apps made by the community!" />
       </Head>
 
