@@ -11,8 +11,10 @@ COPY . .
 RUN npm install
 
 # 環境変数を設定
-COPY .env.local .env
-RUN sed -i 's/=/\=/g' .env
+# COPY .env.local .env
+# RUN sed -i 's/=/\=/g' .env
+
+RUN rm .env
 
 # ビルド
 RUN npm run build
