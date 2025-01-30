@@ -59,7 +59,7 @@ const Profile: React.FC<ProfilePageProps> = ({ user }) => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <Head>
-        <title>プロフィール - Hugging Face Spaces</title>
+        <title>プロフィール - App Gallery Showcase v0.3</title>
       </Head>
       
       <div className="container mx-auto max-w-4xl">
