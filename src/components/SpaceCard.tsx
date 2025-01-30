@@ -173,31 +173,6 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
           </span>
         </div>
 
-        {/* Repository/Website icon */}
-        {repository && (
-          <a 
-            href={repository}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="absolute top-2 right-2 flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1.5 transition-all duration-300 transform scale-90 hover:scale-100 hover:bg-white hover:shadow-md z-20 cursor-pointer"
-          >
-            {repoIcon ? (
-              <Image
-                src={repoIcon}
-                alt="Repository"
-                width={20}
-                height={20}
-                className="rounded-full"
-              />
-            ) : (
-              getUrlTypeInfo(repository)?.icon
-            )}
-            <span className="text-xs font-medium text-gray-700">
-              {getUrlTypeInfo(repository)?.text}
-            </span>
-          </a>
-        )}
 
         {/* Gradient overlay for better text readability */}
         <div className="absolute inset-0 opacity-20 transition-opacity duration-300 bg-gradient-to-br from-black/20 to-black/30" />
@@ -227,7 +202,19 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
             </Link>
           )}
         </div>
- 
+
+        <div className="flex justify-start">
+          {/* Edit and Delete Buttons */}
+          {session?.user?.id === author?.id && (
+            <Link 
+              href={`${repository}`}
+              onClick={(e) => e.stopPropagation()}
+              className="p-2 bg-white/80 rounded-full text-gray-700 hover:bg-white hover:shadow-md transition-all"
+            >
+              <Book className="w-4 h-4" />
+            </Link>
+          )}
+        </div>
         <div className="flex flex-col items-center gap-3">
           <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center text-sm text-white/90">
             <span className="font-medium hover:text-white transition-colors duration-200 bg-black/30 px-3 py-1 rounded-full">

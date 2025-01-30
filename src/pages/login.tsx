@@ -53,7 +53,7 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8">
       <Head>
-        <title>Log In - Hugging Face Spaces</title>
+        <title>Log In - App Gallery Showcase v0.3</title>
       </Head>
       
       <div className="w-full max-w-md bg-white shadow-md rounded-lg p-8">
