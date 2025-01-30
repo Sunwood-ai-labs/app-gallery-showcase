@@ -14,7 +14,7 @@ RUN npm install
 # COPY .env.local .env
 # RUN sed -i 's/=/\=/g' .env
 
-RUN rm .env
+# RUN rm .env
 
 # ビルド
 RUN npm run build
