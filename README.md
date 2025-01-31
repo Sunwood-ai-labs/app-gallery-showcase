@@ -1,76 +1,74 @@
 <div align="center">
 
-![App Gallery Showcase Header](https://github.com/user-attachments/assets/24a2edc1-dc5e-4dda-8d1a-638ab29aede7)
+![App Gallery Showcase Header](assets/header.svg)
 
-# 📊 App Gallery Showcase
+# 🎉 App Gallery Showcase v0.5.0
 
-**プロジェクトを美しく魅力的に紹介するウェブアプリケーション**
+**プロジェクトを美しく魅力的に紹介する次世代Webアプリケーション**
 
-[![GitHub stars](https://img.shields.io/github/stars/Sunwood-ai-labs/hf-space-card-showcase?style=social)](https://github.com/Sunwood-ai-labs/hf-space-card-showcase)
-[![GitHub license](https://img.shields.io/github/license/Sunwood-ai-labs/hf-space-card-showcase)](https://github.com/Sunwood-ai-labs/hf-space-card-showcase/blob/main/LICENSE)
-
-[![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![NextAuth.js](https://img.shields.io/badge/NextAuth.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://next-auth.js.org/)
-[![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)](https://www.prisma.io/)
-[![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+[![GitHub Release](https://img.shields.io/github/v/release/Sunwood-ai-labs/hf-space-card-showcase?style=flat-square)](https://github.com/Sunwood-ai-labs/hf-space-card-showcase/releases)
+[![Docker Pulls](https://img.shields.io/docker/pulls/sunwoodai/app-gallery-showcase?style=flat-square)](https://github.com/Sunwood-ai-labs/hf-space-card-showcase/pkgs/container/hf-space-card-showcase)
 
 </div>
 
-## 📖 はじめに
-このリポジトリは、Hugging Face Spaces Galleryをベースにしたアプリケーションギャラリーのショーケースです。
-
-## ✨ 特徴
-- 最新のUIフレームワークを使用
-- レスポンシブデザイン
-- ユーザーフレンドリーなインターフェース
+## 🚀 特徴
+- 🐳 マルチアーキテクチャDockerサポート
+- 🔄 GitHub ActionsによるCI/CD
+- 🛡️ 防御的プログラミング実装
+- 🎨 DiceBear連携の動的アバター
+- 📦 最適化されたPrismaクライアント
 
 ## 🛠️ セットアップ
-1. リポジトリをクローンします。
-2. 依存関係をインストールします。
-   ```bash
-   npm install
-   ```
-3. 開発サーバーを起動します。
-   ```bash
-   npm run dev
-   ```
 
-## 🐳 Docker イメージのビルドとプッシュ
-1.  Dockerfile を使用して Docker イメージをビルドします。
-    ```bash
-    docker build -t ghcr.io/<your-github-username>/hf-space-card-showcase:latest .
-    ```
-2.  GitHub Container Registry に Docker イメージをプッシュします。
-    ```bash
-    docker push ghcr.io/<your-github-username>/hf-space-card-showcase:latest
-    ```
-    - GitHub Actions ワークフローを使用すると、main ブランチへのプッシュ時に自動的に Docker イメージがビルドされ、プッシュされます。
+### 📦 ローカル開発
+```bash
+git clone https://github.com/Sunwood-ai-labs/hf-space-card-showcase.git
+cd hf-space-card-showcase
+npm install
+cp .env.example .env.local
+npm run dev
+```
 
-## 🚀 アプリケーションの起動
-- Docker を使用してアプリケーションを起動します。
-    ```bash
-    docker run -p 3000:3000 ghcr.io/<your-github-username>/hf-space-card-showcase:latest
-    ```
+### 🐳 Docker環境
+```bash
+# マルチアーキテクチャイメージの取得
+docker pull ghcr.io/sunwood-ai-labs/app-gallery-showcase:latest
 
-## � コミットメッセージ形式
-- コミットメッセージは以下の形式に従うこと:
-  ```
-  <絵文字> <タイプ> #<Issue番号>: <タイトル>
-  <本文>
-  <フッター>
-  ```
-- タイトル（コミットメッセージの1行目）の先頭には必ず絵文字を付与し、日本語で記述すること  
-- タイプは以下のいずれかとする：
-  - feat: 新機能  
-  - fix: バグ修正  
-  - docs: ドキュメントの変更  
-  - style: コードスタイルの変更（動作に影響しない）  
-  - refactor: リファクタリング  
-  - perf: パフォーマンス改善  
-  - test: テストの追加・修正  
-  - chore: ビルドプロセスやツールの変更
+# コンテナ起動
+docker run -p 3000:3000 \
+  --env-file .env.local \
+  ghcr.io/sunwood-ai-labs/app-gallery-showcase:latest
+```
+
+## ⚙️ 環境変数
+```env
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-secret-key
+NEXT_PUBLIC_SITE_NAME="App Gallery Showcase"
+NEXT_PUBLIC_FONT_IMPORT="Noto+Sans+JP:wght@400;500;700"
+```
+
+## 🔄 CI/CDパイプライン
+- 自動ビルド＆デプロイ
+- マルチプラットフォームビルド（linux/amd64, arm64）
+- Semverタグ管理
+
+## 📜 コミットメッセージ
+```
+✨ feat #123: 新機能を追加
+📝 docs #45: ドキュメント更新
+🐛 fix #67: バグ修正
+```
+
+## 📚 詳細ドキュメント
+- [開発ガイド](docs/DEVELOPMENT.md)
+- [デプロイ手順](docs/DEPLOYMENT.md)
+- [APIリファレンス](docs/API.md)
+
+## 📊 MEMORY要件
+- Dockerコンテナのメモリ使用量を最適化
+- Docker Composeによるコンテナ管理
+- Docker Hubへのイメージプッシュ
 
 ## 📜 ライセンス
 このプロジェクトはMITライセンスの下で公開されています。
