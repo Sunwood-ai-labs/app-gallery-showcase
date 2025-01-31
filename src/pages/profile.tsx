@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Head from 'next/head';
 import { getSession } from 'next-auth/react';
 import { GetServerSideProps } from 'next';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { ProfileForm } from '@/components/profile/ProfileForm';
 import { ProfileInfo, ProfileActivity } from '@/components/profile/ProfileInfo';
 
@@ -118,8 +118,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  const prisma = new PrismaClient();
-
   try {
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
@@ -133,9 +131,30 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       }
     });
 
+    if (!user) {
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
+      };
+    }
+
+    const serializedUser = JSON.parse(JSON.stringify(user));
+
+    if (typeof serializedUser.username !== 'string' || typeof serializedUser.email !== 'string') {
+      console.error('Invalid user data:', serializedUser);
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
+      };
+    }
+
     return {
       props: { 
-        user: JSON.parse(JSON.stringify(user))
+        user: serializedUser
       }
     };
   } catch (error) {
@@ -146,8 +165,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         permanent: false,
       },
     };
-  } finally {
-    await prisma.$disconnect();
   }
 };
 

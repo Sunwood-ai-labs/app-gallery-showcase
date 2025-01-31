@@ -92,18 +92,16 @@ export default function Navbar() {
                 <span className="ml-1">Analysis</span>
               </Link>
               <div className="flex items-center space-x-2">
-                {session?.user?.image && (
-                  <Link href="/profile">
-                    <Image
-                      src={session?.user?.image}
-                      alt="Profile"
-                      width={32}
-                      height={32}
-                      priority
-                      className="rounded-full transition-transform duration-300 hover:scale-110 hover:shadow-lg"
-                    />
-                  </Link>
-                )}
+                <Link href="/profile">
+                  <Image
+                    src={session?.user?.image || `https://api.dicebear.com/7.x/adventurer/svg?seed=${session.user.username || session.user.id}`}
+                    alt="Profile"
+                    width={32}
+                    height={32}
+                    priority
+                    className="rounded-full transition-transform duration-300 hover:scale-110 hover:shadow-lg"
+                  />
+                </Link>
                 <LogoutButton />
               </div>
             </>
@@ -168,18 +166,16 @@ export default function Navbar() {
                   <span className="ml-1">Analysis</span>
                 </Link>
                 <div className="flex items-center space-x-2 py-2">
-                  {session?.user?.image && (
-                    <Link href="/profile">
-                      <Image
-                        src={session?.user?.image}
-                        alt="Profile"
-                        width={32}
-                        height={32}
-                        priority
-                        className="rounded-full transition-transform duration-300 hover:scale-110"
-                      />
-                    </Link>
-                  )}
+                  <Link href="/profile">
+                    <Image
+                      src={session?.user?.image || `https://api.dicebear.com/7.x/adventurer/svg?seed=${session.user.username || session.user.id}`}
+                      alt="Profile"
+                      width={32}
+                      height={32}
+                      priority
+                      className="rounded-full transition-transform duration-300 hover:scale-110"
+                    />
+                  </Link>
                   <span className="text-gray-700">{session.user.username || session.user.name}</span>
                 </div>
                 <LogoutButton />
