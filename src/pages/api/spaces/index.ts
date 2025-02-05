@@ -11,6 +11,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
     const spaces = await prisma.space.findMany({
+      where: {
+        visibility: 'public', // 公開スペースのみを取得
+      },
       include: {
         author: {
           select: {
@@ -22,7 +25,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
         clicks: {
           where: {
-            // 1週間以内のクリックのみを取得
             createdAt: { gte: oneWeekAgo }
           }
         },
@@ -32,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
 
-    // 各スペースのいいね数と作成日からの経過日数を計算
+    // 各スペースのクリック数と作成日からの経過日数を計算
     const spacesWithMetadata = spaces.map(space => ({
       ...space,
       clicks: space.clicks.length,
