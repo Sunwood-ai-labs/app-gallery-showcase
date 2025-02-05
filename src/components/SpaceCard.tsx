@@ -191,7 +191,7 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
       {/* Hover overlay with animation */}
       <div className="absolute inset-0 flex flex-col justify-between p-4 bg-gradient-to-b from-black/0 via-black/20 to-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out">
         <div className="flex justify-start">
-          {/* Edit and Delete Buttons */}
+          {/* Edit button - only for author */}
           {session?.user?.id === author?.id && (
             <Link 
               href={`/edit-space/${id}`}
@@ -204,10 +204,10 @@ const SpaceCard: React.FC<SpaceCardProps> = ({
         </div>
 
         <div className="flex justify-start">
-          {/* Edit and Delete Buttons */}
-          {session?.user?.id === author?.id && (
+          {/* Repository link - visible to all users */}
+          {repository && (
             <Link 
-              href={`${repository}`}
+              href={repository}
               onClick={(e) => e.stopPropagation()}
               className="p-2 bg-white/80 rounded-full text-gray-700 hover:bg-white hover:shadow-md transition-all"
             >

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { getSession } from 'next-auth/react';
 import { GetServerSideProps } from 'next';
 import { prisma } from '@/lib/prisma';
 import { ProfileForm } from '@/components/profile/ProfileForm';
 import { ProfileInfo, ProfileActivity } from '@/components/profile/ProfileInfo';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 interface ProfilePageProps {
   user: {
@@ -18,10 +20,35 @@ interface ProfilePageProps {
 }
 
 const Profile: React.FC<ProfilePageProps> = ({ user }) => {
+  const router = useRouter();
+  const { data: session, status } = useSession({
+    required: true,
+  });
+
   const [username, setUsername] = useState(user.username);
   const [bio, setBio] = useState(user.bio || '');
   const [email, setEmail] = useState(user.email);
   const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    if (status === 'loading') return;
+
+    if (!session) {
+      router.push('/login?callbackUrl=/profile');
+    }
+  }, [session, status, router]);
+
+  if (status === 'loading') {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary-500"></div>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return null;
+  }
 
   const handleSave = async () => {
     try {
@@ -109,10 +136,10 @@ const Profile: React.FC<ProfilePageProps> = ({ user }) => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);
 
-  if (!session) {
+  if (!session?.user) {
     return {
       redirect: {
-        destination: '/login',
+        destination: '/login?callbackUrl=/profile',
         permanent: false,
       },
     };
@@ -128,7 +155,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         name: true,
         bio: true,
         image: true,
-      }
+      },
     });
 
     if (!user) {
@@ -140,28 +167,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       };
     }
 
-    const serializedUser = JSON.parse(JSON.stringify(user));
-
-    if (typeof serializedUser.username !== 'string' || typeof serializedUser.email !== 'string') {
-      console.error('Invalid user data:', serializedUser);
-      return {
-        redirect: {
-          destination: '/login',
-          permanent: false,
-        },
-      };
-    }
-
     return {
-      props: { 
-        user: serializedUser
-      }
+      props: {
+        user,
+      },
     };
   } catch (error) {
-    console.error('プロフィール取得エラー:', error);
+    console.error('Error fetching user data:', error);
     return {
       redirect: {
-        destination: '/login',
+        destination: '/error',
         permanent: false,
       },
     };
