@@ -39,7 +39,7 @@ export const authOptions: AuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          return null;
+          throw new Error('メールアドレスとパスワードを入力してください');
         }
 
         const user = await prisma.user.findUnique({
@@ -47,17 +47,16 @@ export const authOptions: AuthOptions = {
         });
 
         if (!user) {
-          return null;
+          throw new Error('ユーザーが見つかりません');
         }
 
-        // Use bcryptjs for password comparison
         const isValidPassword = await bcrypt.compare(
           credentials.password, 
           user.password || ''
         );
 
         if (!isValidPassword) {
-          return null;
+          throw new Error('パスワードが正しくありません');
         }
 
         return {
@@ -72,57 +71,48 @@ export const authOptions: AuthOptions = {
     }),
   ],
   session: {
-    strategy: 'jwt', 
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30日
   },
-  events: {
-    async signIn(message) {
-      console.log('サインイン:', message);
-    },
-    async signOut(message) {
-      console.log('サインアウト:', message);
-    },
-    async createUser(message) {
-      console.log('ユーザー作成:', message);
-    }
-  },
-  logger: {
-    error(code, metadata) {
-      console.error('NextAuth Error:', { code, metadata });
-    },
-    warn(code) {
-      console.warn('NextAuth Warning:', code);
-    },
-    debug(code, metadata) {
-      console.debug('NextAuth Debug:', { code, metadata });
-    }
+  jwt: {
+    secret: process.env.NEXTAUTH_SECRET,
+    maxAge: 30 * 24 * 60 * 60, // 30日
   },
   pages: {
     signIn: '/login',
-    signOut: '/login',
-    error: '/login'
+    error: '/login',
   },
   callbacks: {
-    async session({ session, token }) {
-      if (token) {
-        session.user = {
-          id: token.id,
-          name: token.name,
-          email: token.email,
-          username: token.username,
-          bio: token.bio,
-          image: token.image,
-        };
-      }
-      return session;
-    },
-    async jwt({ token, user }) {
+    async signIn({ user, account, profile, email, credentials }) {
       if (user) {
-        return { ...token, ...user };
+        return true;
+      }
+      return false;
+    },
+    async jwt({ token, user, account }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.username = user.username;
+        token.bio = user.bio;
+        token.image = user.image;
       }
       return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id;
+        session.user.email = token.email as string;
+        session.user.name = token.name;
+        session.user.username = token.username as string | null;
+        session.user.bio = token.bio as string | null;
+        session.user.image = token.image as string | null;
+      }
+      return session;
     }
   },
+  debug: process.env.NODE_ENV === 'development',
   secret: process.env.NEXTAUTH_SECRET
 };
 
