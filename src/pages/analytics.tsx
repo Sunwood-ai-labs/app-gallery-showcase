@@ -2,7 +2,9 @@ import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { AnalyticsDashboard } from '@/components/analytics/AnalyticsDashboard';
+import { useSession } from 'next-auth/react';
 
 interface AnalyticsData {
   totalSpaces: number;
@@ -25,6 +27,9 @@ interface AnalyticsData {
 }
 
 export default function AnalyticsPage() {
+  const router = useRouter();
+  const { data: session } = useSession();
+
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -48,6 +53,14 @@ export default function AnalyticsPage() {
     fetchAnalytics();
   }, []);
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary-500"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Head>
@@ -62,12 +75,6 @@ export default function AnalyticsPage() {
           </h1>
         </div>
 
-        {loading && (
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF9D00]"></div>
-          </div>
-        )}
-
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg">
             {error}
@@ -81,17 +88,6 @@ export default function AnalyticsPage() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getSession(context);
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
-
   return {
     props: {},
   };
