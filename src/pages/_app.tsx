@@ -59,7 +59,11 @@ function MyApp({
         <meta property="og:image" content={siteConfig.ogImage} />
       </Head>
       
-      <SessionProvider session={session}>
+      <SessionProvider 
+        session={session}
+        refetchInterval={5 * 60} // 5分ごとにセッションを再取得
+        refetchOnWindowFocus={true} // ウィンドウにフォーカスが当たった時に再取得
+      >
         <div 
           className={`${defaultFont.variable} ${japaneseFont.variable} min-h-screen`}
           style={{ 
