@@ -30,17 +30,33 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     const fetchSpaces = async () => {
-      const response = await fetch('/api/spaces');
-      const data = await response.json();
-      
-      // トレンディングスペースを計算
-      const trending = [...data].sort((a, b) => {
-        const getScore = (space: Space) => space.clicks; // clicksは既に1週間以内のみ
-        return getScore(b) - getScore(a);
-      }).slice(0, 4);
+      try {
+        const response = await fetch('/api/spaces');
+        if (!response.ok) {
+          throw new Error('Failed to fetch spaces');
+        }
+        const data = await response.json();
+        
+        // データが配列であることを確認
+        if (Array.isArray(data)) {
+          // トレンディングスペースを計算
+          const trending = [...data].sort((a, b) => {
+            const getScore = (space: Space) => space.clicks;
+            return getScore(b) - getScore(a);
+          }).slice(0, 4);
 
-      setTrendingSpaces(trending);
-      setSpaces(data);
+          setTrendingSpaces(trending);
+          setSpaces(data);
+        } else {
+          console.error('Received invalid data format');
+          setTrendingSpaces([]);
+          setSpaces([]);
+        }
+      } catch (error) {
+        console.error('Error fetching spaces:', error);
+        setTrendingSpaces([]);
+        setSpaces([]);
+      }
     };
 
     fetchSpaces();

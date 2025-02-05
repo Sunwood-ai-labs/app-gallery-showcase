@@ -9,6 +9,13 @@
 [![GitHub Release](https://img.shields.io/github/v/release/Sunwood-ai-labs/hf-space-card-showcase?style=flat-square)](https://github.com/Sunwood-ai-labs/hf-space-card-showcase/releases)
 [![Docker Pulls](https://img.shields.io/docker/pulls/sunwoodai/app-gallery-showcase?style=flat-square)](https://github.com/Sunwood-ai-labs/hf-space-card-showcase/pkgs/container/hf-space-card-showcase)
 
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![NextAuth.js](https://img.shields.io/badge/NextAuth.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://next-auth.js.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)](https://www.prisma.io/)
+[![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+
 </div>
 
 ## 🚀 特徴
@@ -52,13 +59,6 @@ NEXT_PUBLIC_FONT_IMPORT="Noto+Sans+JP:wght@400;500;700"
 - 自動ビルド＆デプロイ
 - マルチプラットフォームビルド（linux/amd64, arm64）
 - Semverタグ管理
-
-## 📜 コミットメッセージ
-```
-✨ feat #123: 新機能を追加
-📝 docs #45: ドキュメント更新
-🐛 fix #67: バグ修正
-```
 
 ## 📚 詳細ドキュメント
 - [開発ガイド](docs/DEVELOPMENT.md)

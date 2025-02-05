@@ -1,6 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@/lib/prisma';
 
+/**
+ * 分析データを取得するAPI
+ * このエンドポイントは公開されており、誰でもアクセス可能です
+ */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' });
@@ -11,18 +15,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
     // 1. 全体の統計
-    const totalSpaces = await prisma.space.count();
+    const totalSpaces = await prisma.space.count({
+      where: { visibility: 'public' } // 公開スペースのみカウント
+    });
     const totalClicks = await prisma.click.count();
 
-    // 2. カテゴリ別のスペース数
+    // 2. カテゴリ別のスペース数（公開スペースのみ）
     const spacesByCategory = await prisma.space.groupBy({
       by: ['category'],
+      where: { visibility: 'public' },
       _count: true,
     });
 
-    // 3. ランタイム別のスペース数
+    // 3. ランタイム別のスペース数（公開スペースのみ）
     const spacesByRuntime = await prisma.space.groupBy({
       by: ['runtime'],
+      where: { visibility: 'public' },
       _count: true,
     });
 
@@ -33,13 +41,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         createdAt: {
           gte: oneWeekAgo,
         },
+        space: {
+          visibility: 'public'
+        }
       },
       _count: true,
     });
 
-    // 5. トップスペース（クリック数順）
+    // 5. トップスペース（クリック数順、公開スペースのみ）
     const topSpaces = await prisma.space.findMany({
       take: 5,
+      where: { visibility: 'public' },
       include: {
         author: {
           select: {
@@ -60,9 +72,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
 
-    // 6. 最新のアクティビティ
+    // 6. 最新のアクティビティ（公開スペースのみ）
     const recentActivity = await prisma.click.findMany({
       take: 10,
+      where: {
+        space: {
+          visibility: 'public'
+        }
+      },
       include: {
         space: {
           include: {
@@ -110,6 +127,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   } catch (error) {
     console.error('Analytics error:', error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: 'データの取得中にエラーが発生しました' });
   }
 }
